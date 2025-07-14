@@ -7,10 +7,12 @@ services:
       - "8000:8000"
     volumes:
       - ./backend:/app
+      - /app/node_modules
+    env_file:
+      - ./.env
     depends_on:
-      - database
-    environment:
-      - DATABASE_URL=mysql://root:password@database:3306/blog_app
+      database:
+        condition: service_healthy
 
   frontend:
     build:
@@ -25,14 +27,19 @@ services:
     image: mysql:8.0
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: blog_app
-      MYSQL_USER: blog_user
-      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - db-data:/var/lib/mysql
     ports:
       - "3308:3306"
+    healthcheck: # DBの準備完了をチェック
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   db-data:
