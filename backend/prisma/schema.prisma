@@ -19,7 +19,6 @@ model User {
   user_id         String?  @db.VarChar(20) @unique
   name            String
   email           String   @unique
-  tel             String?   @db.VarChar(20)
   birthday        DateTime? @db.Date
   self_introduction String?   @db.Text
   password_hash   String
