@@ -16,10 +16,10 @@ datasource db {
 // ユーザーモデル
 model User {
   id              Int      @id @default(autoincrement())
-  user_id         String?  @db.VarChar(20) // Nullable as not marked `not null`
+  user_id         String?  @db.VarChar(20) @unique
   name            String
   email           String   @unique
-  tel             String   @db.VarChar(20)
+  tel             String?   @db.VarChar(20)
   birthday        DateTime? @db.Date
   self_introduction String?   @db.Text
   password_hash   String
