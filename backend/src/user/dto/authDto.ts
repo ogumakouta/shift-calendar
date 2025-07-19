@@ -2,7 +2,6 @@ import {
     IsEmail,
     IsNotEmpty,
     IsString,
-    Max,
     MaxLength,
     MinLength,
     IsDate
@@ -25,7 +24,7 @@ export class AuthDto {
     email: string;
 
     @IsDate()
-    brithday: Date;
+    birthday: Date;
 
     @MinLength(8)
     password: string;
