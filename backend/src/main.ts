@@ -12,6 +12,9 @@ async function bootstrap() {
     transform: true, // 受け取ったデータをDTOの型に変換しようと試みる
   }));
 
+  // シャットダウンの時にonModuleDestroyを呼び出す
+  app.enableShutdownHooks()
+
   await app.listen(process.env.BACKEND_PORT || 8000);
 }
 bootstrap();
