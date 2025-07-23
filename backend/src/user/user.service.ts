@@ -45,4 +45,11 @@ export class UserService {
       throw new InternalServerErrorException('Could not create user.');
     }
   }
+
+  // ログイン
+  async findOneByEmail(email: string) {
+    return this.prisma.user.findUnique({
+      where: { email }
+    });
+  }
 }
