@@ -12,6 +12,12 @@ async function bootstrap() {
     transform: true, // 受け取ったデータをDTOの型に変換しようと試みる
   }));
 
+  // アクセスを許可するフロントエンドのURLを指定
+  app.enableCors({
+    origin: process.env.CORS_ORIGIN,
+    credentials: true,
+  });
+
   // シャットダウンの時にonModuleDestroyを呼び出す
   app.enableShutdownHooks()
 
