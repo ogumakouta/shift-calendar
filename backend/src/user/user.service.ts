@@ -8,6 +8,7 @@ import { Prisma } from '@prisma/client';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
+  // ユーザー新規登録
   async create(createUserDto: CreateUserDto) {
     const { name, email, password, tel, birthday } = createUserDto;
 
