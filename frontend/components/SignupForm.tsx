@@ -35,7 +35,7 @@ export default function LoginForm() {
             name: name,
             email: email,
             password: password,
-            birthday: birthday,
+            birthday: birthday ? new Date(birthday) : null,
         })
         // 登録に成功したら自動でログインする
         .then(res => {
@@ -132,7 +132,7 @@ export default function LoginForm() {
         type="submit"
         className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
       >
-        ログイン
+        登録
       </button>
     </form>
   );
