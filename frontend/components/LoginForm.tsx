@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
@@ -53,7 +54,6 @@ export default function LoginForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="p-2 border rounded-md"
-          required
         />
       </div>
       <div className="flex flex-col gap-2">
@@ -64,9 +64,9 @@ export default function LoginForm() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="p-2 border rounded-md"
-          required
         />
       </div>
+      <div className="text-sm text-center">アカウントをお持ちでない方は<Link href="signup" className="text-blue-500">新規登録</Link>してください</div>
       <button 
         type="submit"
         className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"

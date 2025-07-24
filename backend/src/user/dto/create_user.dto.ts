@@ -17,7 +17,7 @@ export class CreateUserDto {
     email: string;
 
     @IsString()
-    @MinLength(8, { message: 'Password must be at least 8 characters long' })
+    @MinLength(8, { message: 'パスワードは8文字以上で入力してください' })
     @IsNotEmpty()
     password: string;
 

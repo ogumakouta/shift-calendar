@@ -39,10 +39,10 @@ export class UserService {
       // Prismaのエラーコードをチェック (P2002はユニーク制約違反)
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
           // emailが既に存在する場合
-          throw new ConflictException('Email already exists.');
+          throw new ConflictException('メールアドレスは既に使われてます');
       }
       // その他のデータベースエラー
-      throw new InternalServerErrorException('Could not create user.');
+      throw new InternalServerErrorException('登録に失敗しました');
     }
   }
 
