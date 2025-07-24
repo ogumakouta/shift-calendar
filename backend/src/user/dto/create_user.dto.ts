@@ -21,10 +21,6 @@ export class CreateUserDto {
   @IsNotEmpty()
   password: string;
 
-  @IsString()
-  @IsOptional()
-  tel?: string;
-
   @IsDateString()
   @IsOptional()
   birthday?: string;

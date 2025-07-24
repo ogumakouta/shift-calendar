@@ -10,7 +10,7 @@ export class UserService {
 
   // ユーザー新規登録
   async create(createUserDto: CreateUserDto) {
-    const { name, email, password, tel, birthday } = createUserDto;
+    const { name, email, password, birthday } = createUserDto;
 
     // パスワードをハッシュ化
     const saltRounds = 10;
