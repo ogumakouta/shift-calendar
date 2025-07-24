@@ -1,4 +1,4 @@
-import { Injectable, ConflictException, InternalServerErrorException, } from '@nestjs/common';
+import { Injectable, ConflictException, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create_user.dto';
 import * as bcrypt from 'bcrypt';
@@ -37,9 +37,11 @@ export class UserService {
       return user;
     } catch (error) {
       // Prismaのエラーコードをチェック (P2002はユニーク制約違反)
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-          // emailが既に存在する場合
-          throw new ConflictException('メールアドレスは既に使われてます');
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002'
+      ) {
+        // emailが既に存在する場合
+        throw new ConflictException('メールアドレスは既に使われてます');
       }
       // その他のデータベースエラー
       throw new InternalServerErrorException('登録に失敗しました');
@@ -49,7 +51,7 @@ export class UserService {
   // ログイン
   async findOneByEmail(email: string) {
     return this.prisma.user.findUnique({
-      where: { email }
+      where: { email },
     });
   }
 }
