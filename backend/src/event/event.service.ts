@@ -1,4 +1,55 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+import { EventDto } from './dto/event.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
-export class EventService {}
+export class EventService {
+  constructor(private prisma: PrismaService) {}
+
+  // 予定作成
+  async create(eventDto: EventDto) {
+    const {
+      user_id,
+      title,
+      workplace_id,
+      is_allday,
+      start_time,
+      finish_time,
+      break_minutes,
+      location,
+      memo,
+    } = eventDto;
+
+    try {
+      const event = await this.prisma.event.create({
+        data: {
+          user_id,
+          title,
+          workplace_id: workplace_id ? Number(workplace_id) : null,
+          is_allday,
+          start_time,
+          finish_time,
+          break_minutes: break_minutes ? Number(break_minutes) : null,
+          location: location ? String(location) : null,
+          memo: memo ? String(memo) : null,
+        },
+        select: {
+          user_id: true,
+          title: true,
+          workplace_id: true,
+          is_allday: true,
+          start_time: true,
+          finish_time: true,
+          break_minutes: true,
+          location: true,
+          memo: true,
+        }
+      });
+
+      return event;
+    } catch {
+      throw new InternalServerErrorException('予定の登録に失敗しました');
+    }
+  }
+}
