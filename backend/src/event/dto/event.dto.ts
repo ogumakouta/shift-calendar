@@ -4,7 +4,7 @@ import {
   IsBoolean,
   IsDateString,
   IsNotEmpty,
-  IsOptional
+  IsOptional,
 } from 'class-validator';
 
 export class EventDto {

@@ -1,8 +1,6 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { EventDto } from './dto/event.dto';
-import { Prisma } from '@prisma/client';
-
 @Injectable()
 export class EventService {
   constructor(private prisma: PrismaService) {}
@@ -44,7 +42,7 @@ export class EventService {
           break_minutes: true,
           location: true,
           memo: true,
-        }
+        },
       });
 
       return event;

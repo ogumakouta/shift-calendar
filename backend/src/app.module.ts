@@ -9,10 +9,13 @@ import { AuthController } from './auth/auth.controller';
 import { EventService } from './event/event.service';
 import { EventController } from './event/event.controller';
 import { EventModule } from './event/event.module';
+import { WorkplaceService } from './workplace/workplace.service';
+import { WorkplaceController } from './workplace/workplace.controller';
+import { WorkplaceModule } from './workplace/workplace.module';
 
 @Module({
-  imports: [UserModule, AuthModule, EventModule],
-  controllers: [AppController, AuthController, EventController],
-  providers: [AppService, PrismaService, AuthService, EventService],
+  imports: [UserModule, AuthModule, EventModule, WorkplaceModule],
+  controllers: [AppController, AuthController, EventController, WorkplaceController],
+  providers: [AppService, PrismaService, AuthService, EventService, WorkplaceService],
 })
 export class AppModule {}
