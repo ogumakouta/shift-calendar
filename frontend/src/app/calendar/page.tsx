@@ -2,11 +2,11 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Calender from '../../../components/Calendar';
+import CreateEvent from '../../../components/CreateEvent';
 import Link from 'next/link';
 
 export default function CalendarPage() {
   const router = useRouter();
-  
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -32,11 +32,12 @@ export default function CalendarPage() {
 
   // 認証が成功した場合に表示されるページ内容
   return (
-    <main>
-      <Calender />
+    <div className="flex">
+      <CreateEvent/>
+      <Calender/>
       {/* <button onClick={logout}>ログアウト</button>
       <p>このページはログインしたユーザーのみが閲覧できます。</p> */}
       {/* ここにカレンダーのコンポーネントや機能を追加していく */}
-    </main>
+    </div>
   );
 }
