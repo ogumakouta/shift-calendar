@@ -24,7 +24,7 @@ model User {
   updated_at    DateTime     @updatedAt
   workplaces    Workplace[]
   events        Event[]
-  eventLavel    EventLabel[]
+  event_labels  EventLabel[]
 
   @@map("users")
 }
@@ -53,7 +53,7 @@ model Event {
   is_allday     Boolean    @default(false)
   start_time    DateTime
   finish_time   DateTime
-  break_minutes Int?        @default(0)
+  break_minutes Int?
   location      String?    @db.Text
   memo          String?    @db.Text
   created_at    DateTime   @default(now())
