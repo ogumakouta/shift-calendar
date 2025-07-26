@@ -24,6 +24,7 @@ model User {
   updated_at    DateTime     @updatedAt
   workplaces    Workplace[]
   events        Event[]
+  eventLavel    EventLabel[]
 
   @@map("users")
 }
@@ -65,8 +66,10 @@ model Event {
 
 model EventLabel {
   id    Int    @id @default(autoincrement())
+  user_id Int
   name  String @db.Text
   color String @db.Text
+  user         User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@map("event_labels")
 }
