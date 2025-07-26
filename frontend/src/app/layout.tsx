@@ -27,7 +27,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-      <div className="header">
+      <div className="header text-5xl mt-5 mb-5">
         シフトカレンダー
       </div>
         {children}
