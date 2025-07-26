@@ -19,12 +19,12 @@ export default function MyCalendar() {
     <div className="flex">
       <div className="text-center mt-4">
         {/* Dateオブジェクトを文字列に変換して表示 */}
-        <p>選択中の日付: {date instanceof Date ? date.toLocaleDateString('ja-JP') : '日付を選択してください'}</p>
+        {/* <p>選択中の日付: {date instanceof Date ? date.toLocaleDateString('ja-JP') : '日付を選択してください'}</p> */}
       </div>
       <Calendar 
         onChange={setDate} 
         value={date} 
-        // locale="ja-JP" // 日本語化したい場合
+        locale="ja-JP"
       />
     </div>
   );
