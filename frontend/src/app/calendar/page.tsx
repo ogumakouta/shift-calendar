@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Calender from '../../../components/Calendar';
 import Link from 'next/link';
 
 export default function CalendarPage() {
@@ -32,9 +33,9 @@ export default function CalendarPage() {
   // 認証が成功した場合に表示されるページ内容
   return (
     <main>
-      <h1>カレンダー</h1>
-      <button onClick={logout}>ログアウト</button>
-      <p>このページはログインしたユーザーのみが閲覧できます。</p>
+      <Calender />
+      {/* <button onClick={logout}>ログアウト</button>
+      <p>このページはログインしたユーザーのみが閲覧できます。</p> */}
       {/* ここにカレンダーのコンポーネントや機能を追加していく */}
     </main>
   );
