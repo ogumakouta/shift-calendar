@@ -9,18 +9,21 @@ export default function CreateEvent() {
   const [eventType, setEvemtType] = useState('');
   const [user_id, setUser_id] = useState('');
   const [title, setTitle] = useState('');
-  const [workplace, setWorkplace] = useState('');
-  const [isAllday, setIsAllday] = useState('false');
+  const [selectedWorkplace, setSelectedWorkplace] = useState();
+  const [workplace, setWorkplace] = useState([]);
+  const [isAllday, setIsAllday] = useState(false);
   const [startTime, setStartTime] = useState('');
   const [finishTime, setFinishTime] = useState('');
   const [breakMinutes, setBreakMinutes] = useState('');
   const [location, setLocation] = useState('');
   const [memo, setMemo] = useState('');
   const [error, setError] = useState('');
-  const [labels, setLabels] = useState('');
   const router = useRouter();
 
-  
+  // apiから取得した選択肢を配列で管理
+  const [labels, setLabels] = useState([]);
+  const [workplaces, setWorkplaces] = useState([]);
+
   useEffect (() => {
     const token = localStorage.getItem('access_token');
     if (token) {
@@ -36,7 +39,6 @@ export default function CreateEvent() {
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL
   useEffect (() => {
-    console.log(`${apiUrl}/event-lavel/getLabels/${user_id}`);
     // 予定の種類用のラベルを取得
     axios.get(`${apiUrl}/event-label/getLabels/${user_id}`)
     .then((res) => {
@@ -45,6 +47,17 @@ export default function CreateEvent() {
     })
     .catch((err) => {
       console.error('ラベルの取得に失敗しました:', err);
+      // setError('予定の種類の取得に失敗しました。');
+    });
+
+    // 勤務先の取得
+    axios.get(`${apiUrl}/workplace/getWorkplace/${user_id}`)
+    .then((res) => {
+      console.log(res.data)
+      setWorkplace(res.data);
+    })
+    .catch((err) => {
+      console.error('勤務先の取得に失敗しました:', err);
       // setError('予定の種類の取得に失敗しました。');
     });
   }, [user_id]);
@@ -62,11 +75,11 @@ export default function CreateEvent() {
     axios.post(`${apiUrl}/event/create`, {
       user_id: user_id,
       title: title,
-      workplace: workplace,
-      isAllday: isAllday,
+      workplace_id: eventType === '予定' ? null : selectedWorkplace,
+      is_Allday: isAllday,
       startTime: startTime,
       finishTime: finishTime,
-      breakMinutes: breakMinutes,
+      breakMinutes: eventType === '予定' ? null : breakMinutes,
       location: location,
       memo: memo
     })
@@ -105,7 +118,7 @@ export default function CreateEvent() {
           >
             <option value=""></option>
             {labels.map((label) => (
-              <option key={label.id} value={label.id}>{label.name}</option>
+              <option key={label.id} value={label.name}>{label.name}</option>
             ))}
           </select>
         </div>
@@ -123,25 +136,31 @@ export default function CreateEvent() {
           <label htmlFor="workplace" className="font-semibold text-left">勤務先：</label>
           <select
             id="workplace"
-            value={workplace}
-            onChange={(e) => setWorkplace(e.target.value)}
-            className="p-2 border rounded-md"
-          />
+            value={selectedWorkplace}
+            onChange={(e) => setSelectedWorkplace(e.target.value)}
+            className="p-2 border rounded-md disabled:bg-gray-100 disabled:opacity-70 disabled:cursor-not-allowed"
+            disabled={eventType === '予定' || eventType === ''}
+          >
+            {workplace.map((workplace) => (
+              <option key={workplace.id} value={workplace.id}>{workplace.name}</option>
+            ))}
+
+          </select>
         </div>
         <div className="flex">
           <label htmlFor="isAllday" className="font-semibold text-left">終日：</label>
           <input
             type="checkbox"
             id="isAllday"
-            value={isAllday}
+            checked={isAllday}
             onChange={(e) => setIsAllday(e.target.value)}
             className="p-2 border rounded-md transform scale-150"
           />
         </div>
         <div className="flex flex-col">
-          <label htmlFor="eventType" className="font-semibold text-left">開始時間：</label>
+          <label htmlFor="startTime" className="font-semibold text-left">開始時間：</label>
           <input
-          type="datetime-local"
+          type="time"
             id="startTime"
             value={startTime}
             onChange={(e) => setStartTime(e.target.value)}
@@ -151,7 +170,7 @@ export default function CreateEvent() {
         <div className="flex flex-col">
           <label htmlFor="finishTime" className="font-semibold text-left">終了時間：</label>
           <input
-          type="datetime-local"
+          type="time"
             id="finishTime"
             value={finishTime}
             onChange={(e) => setFinishTime(e.target.value)}
@@ -164,8 +183,15 @@ export default function CreateEvent() {
             id="breakMinutes"
             value={breakMinutes}
             onChange={(e) => setBreakMinutes(e.target.value)}
-            className="p-2 border rounded-md"
-          />
+            className="p-2 border rounded-md disabled:bg-gray-100 disabled:opacity-70 disabled:cursor-not-allowed"
+            disabled={eventType === '予定' || eventType === ''}
+          >
+            {Array.from({ length: 61 }, (_, i) => i).map(minute => (
+              <option key={minute} value={minute}>
+                {minute}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="flex flex-col">
           <label htmlFor="location" className="font-semibold text-left">場所（任意）：</label>
