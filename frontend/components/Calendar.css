@@ -1,0 +1,8 @@
+@charset "utf-8";
+
+.react-calendar {
+    width: 100%;
+    border: none;
+    border-radius: 15px;
+    background-color: #fbfbfb;
+}
