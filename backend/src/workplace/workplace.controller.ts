@@ -1,4 +1,4 @@
-import { Body, Controller, Post, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Post, ValidationPipe } from '@nestjs/common';
 import { WorkplaceService } from './workplace.service';
 import { CreateWorkplaceDto } from './dto/create_workplace.dto';
 
@@ -13,5 +13,11 @@ export class WorkplaceController {
     createWorkplaceDto: CreateWorkplaceDto,
   ) {
     return this.workplaceService.create(createWorkplaceDto);
+  }
+
+  // バイト先取得
+  @Get('getWorkplace/:userId')
+  getLabels(@Param('userId', ParseIntPipe) userId: number) {
+    return this.workplaceService.getWorkplaces(userId);
   }
 }
