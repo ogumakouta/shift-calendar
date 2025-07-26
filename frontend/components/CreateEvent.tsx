@@ -1,13 +1,13 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { jwtDecode } from "jwt-decode";
 
 
 export default function CreateEvent() {
-  const [date, setDate] = useState('');
   const [eventType, setEvemtType] = useState('');
+  const [user_id, setUser_id] = useState('');
   const [title, setTitle] = useState('');
   const [workplace, setWorkplace] = useState('');
   const [isAllday, setIsAllday] = useState('false');
@@ -17,11 +17,37 @@ export default function CreateEvent() {
   const [location, setLocation] = useState('');
   const [memo, setMemo] = useState('');
   const [error, setError] = useState('');
+  const [labels, setLabels] = useState('');
   const router = useRouter();
-  // 選択された日付がDateオブジェクトの場合のみ、フォーマットする
+
+  
+  useEffect (() => {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      try {
+        const decodeToken = jwtDecode(token);
+        setUser_id(decodeToken.sub);
+      } catch(error) {
+        console.log('ユーザIDが見つかりません；',error)
+        setError('ログイン情報が無効です。再度ログインしてください。');
+      }
+    }
+  }, []);
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL
-//   console.log(apiUrl);
+  useEffect (() => {
+    console.log(`${apiUrl}/event-lavel/getLabels/${user_id}`);
+    // 予定の種類用のラベルを取得
+    axios.get(`${apiUrl}/event-label/getLabels/${user_id}`)
+    .then((res) => {
+      console.log(res.data)
+      setLabels(res.data);
+    })
+    .catch((err) => {
+      console.error('ラベルの取得に失敗しました:', err);
+      // setError('予定の種類の取得に失敗しました。');
+    });
+  }, [user_id]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 
@@ -32,6 +58,30 @@ export default function CreateEvent() {
 
     e.preventDefault();
     setError('');
+
+    axios.post(`${apiUrl}/event/create`, {
+      user_id: user_id,
+      title: title,
+      workplace: workplace,
+      isAllday: isAllday,
+      startTime: startTime,
+      finishTime: finishTime,
+      breakMinutes: breakMinutes,
+      location: location,
+      memo: memo
+    })
+    .then(res => {
+        console.log('レスポンス：', res.data);
+    })
+    .catch((error: any) => {
+        if (error.response && error.response.data && error.response.data.message) {
+            setError(error.response.data.message);
+            console.log('エラー内容:', error.response.data);
+        } else {
+            setError('予定の登録に失敗しました');
+            console.log('その他のエラー:', error);
+        }
+    });
   };
 
   return (
@@ -44,16 +94,7 @@ export default function CreateEvent() {
         <div className="text-center text-red-500">
           {error}
         </div>
-        <div className="flex flex-col">
-          <label htmlFor="date" className="font-semibold text-left">日付：</label>
-          <input
-            type="date"
-            id="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            className="p-2 border rounded-md"
-          />
-        </div>
+        <input type="hidden" id='user_id' value={user_id} />
         <div className="flex flex-col">
           <label htmlFor="eventType" className="font-semibold text-left">種類：</label>
           <select
@@ -61,7 +102,12 @@ export default function CreateEvent() {
             value={eventType}
             onChange={(e) => setEvemtType(e.target.value)}
             className="p-2 border rounded-md"
-          />
+          >
+            <option value=""></option>
+            {labels.map((label) => (
+              <option key={label.id} value={label.id}>{label.name}</option>
+            ))}
+          </select>
         </div>
         <div className="flex flex-col">
           <label htmlFor="title" className="font-semibold text-left">タイトル：</label>
@@ -95,7 +141,7 @@ export default function CreateEvent() {
         <div className="flex flex-col">
           <label htmlFor="eventType" className="font-semibold text-left">開始時間：</label>
           <input
-          type="time"
+          type="datetime-local"
             id="startTime"
             value={startTime}
             onChange={(e) => setStartTime(e.target.value)}
@@ -105,7 +151,7 @@ export default function CreateEvent() {
         <div className="flex flex-col">
           <label htmlFor="finishTime" className="font-semibold text-left">終了時間：</label>
           <input
-          type="time"
+          type="datetime-local"
             id="finishTime"
             value={finishTime}
             onChange={(e) => setFinishTime(e.target.value)}
@@ -122,7 +168,7 @@ export default function CreateEvent() {
           />
         </div>
         <div className="flex flex-col">
-          <label htmlFor="location" className="font-semibold text-left">場所：</label>
+          <label htmlFor="location" className="font-semibold text-left">場所（任意）：</label>
           <input
             type="text"
             id="location"
@@ -132,7 +178,7 @@ export default function CreateEvent() {
           />
         </div>
         <div className="flex flex-col">
-          <label htmlFor="memo" className="font-semibold text-left">メモ：</label>
+          <label htmlFor="memo" className="font-semibold text-left">メモ（任意）：</label>
           <input
             type="text"
             id="memo"
