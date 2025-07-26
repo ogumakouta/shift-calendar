@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { EventLavelService } from './event-lavel.service';
-import { EventLavelController } from './event-lavel.controller';
+import { EventLavelService } from './event-label.service';
+import { EventLavelController } from './event-label.controller';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Module({
