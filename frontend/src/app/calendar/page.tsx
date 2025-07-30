@@ -35,9 +35,6 @@ export default function CalendarPage() {
     <div className="flex">
       <CreateEvent/>
       <Calender/>
-      {/* <button onClick={logout}>ログアウト</button>
-      <p>このページはログインしたユーザーのみが閲覧できます。</p> */}
-      {/* ここにカレンダーのコンポーネントや機能を追加していく */}
     </div>
   );
 }
