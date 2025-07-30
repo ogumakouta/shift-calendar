@@ -9,11 +9,13 @@ export default function CreateEvent() {
   const [eventType, setEvemtType] = useState('');
   const [user_id, setUser_id] = useState('');
   const [title, setTitle] = useState('');
-  const [selectedWorkplace, setSelectedWorkplace] = useState();
+  const [selectedWorkplace, setSelectedWorkplace] = useState('');
   const [workplace, setWorkplace] = useState([]);
   const [isAllday, setIsAllday] = useState(false);
   const [startTime, setStartTime] = useState('');
+  const [ISOStartTime, setISOStartTime] = useState('');
   const [finishTime, setFinishTime] = useState('');
+  const [ISOFinishTime, setISOFinishTime] = useState('');
   const [breakMinutes, setBreakMinutes] = useState('');
   const [location, setLocation] = useState('');
   const [memo, setMemo] = useState('');
@@ -22,8 +24,8 @@ export default function CreateEvent() {
 
   // apiから取得した選択肢を配列で管理
   const [labels, setLabels] = useState([]);
-  const [workplaces, setWorkplaces] = useState([]);
 
+  // ユーザIDをLocalStorageから取得
   useEffect (() => {
     const token = localStorage.getItem('access_token');
     if (token) {
@@ -62,6 +64,42 @@ export default function CreateEvent() {
     });
   }, [user_id]);
 
+  // 開始時間をISO8601の形式に変換
+  const handleStart_timeChange = (e) => {
+    const inputValue = e.target.value;
+    setStartTime(inputValue);
+
+    // inputが空でない場合のみ変換を実行
+    if (inputValue) {
+      // 1. inputの値を元にDateオブジェクトを生成 (ブラウザのローカルタイムゾーンで解釈)
+      const localDate = new Date(inputValue);
+
+      // 2. toISOString()でUTCのISO 8601形式に変換
+      const iso = localDate.toISOString();
+      setISOStartTime(iso);
+    } else {
+      setISOStartTime('');
+    }
+  };
+
+  // 終了時間をISO8601の形式に変換
+  const handleFinish_timeChange = (e) => {
+    const inputValue = e.target.value;
+    setFinishTime(inputValue);
+
+    // inputが空でない場合のみ変換を実行
+    if (inputValue) {
+      // 1. inputの値を元にDateオブジェクトを生成 (ブラウザのローカルタイムゾーンで解釈)
+      const localDate = new Date(inputValue);
+
+      // 2. toISOString()でUTCのISO 8601形式に変換
+      const iso = localDate.toISOString();
+      setISOFinishTime(iso);
+    } else {
+      setISOFinishTime('');
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 
     const formData = new FormData(e.currentTarget);
@@ -72,14 +110,15 @@ export default function CreateEvent() {
     e.preventDefault();
     setError('');
 
+    // 予定作成のリクエスト送信
     axios.post(`${apiUrl}/event/create`, {
       user_id: user_id,
       title: title,
-      workplace_id: eventType === '予定' ? null : selectedWorkplace,
-      is_Allday: isAllday,
-      startTime: startTime,
-      finishTime: finishTime,
-      breakMinutes: eventType === '予定' ? null : breakMinutes,
+      workplace_id: eventType === '予定' ? null : parseInt(selectedWorkplace, 10),
+      is_allday: isAllday,
+      start_time: ISOStartTime,
+      finish_time: ISOFinishTime,
+      break_minutes: eventType === '予定' ? null : parseInt(breakMinutes, 10),
       location: location,
       memo: memo
     })
@@ -160,20 +199,20 @@ export default function CreateEvent() {
         <div className="flex flex-col">
           <label htmlFor="startTime" className="font-semibold text-left">開始時間：</label>
           <input
-          type="time"
+          type="datetime-local"
             id="startTime"
             value={startTime}
-            onChange={(e) => setStartTime(e.target.value)}
+            onChange={handleStart_timeChange}
             className="p-2 border rounded-md"
           />
         </div>
         <div className="flex flex-col">
           <label htmlFor="finishTime" className="font-semibold text-left">終了時間：</label>
           <input
-          type="time"
+          type="datetime-local"
             id="finishTime"
             value={finishTime}
-            onChange={(e) => setFinishTime(e.target.value)}
+            onChange={handleFinish_timeChange}
             className="p-2 border rounded-md"
           />
         </div>
