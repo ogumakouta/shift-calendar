@@ -6,3 +6,30 @@
     border-radius: 15px;
     background-color: #fbfbfb;
 }
+
+.react-calendar
+
+.react-calendar__tile {
+    /* 高さを指定してタイルを大きくする */
+    height: 117px;
+    border: 0.5px solid #d2d2d2;
+    
+    display: flex;
+    align-items: start;
+    justify-content: center;
+}
+
+/* 土曜日だけ青色にする */
+.react-calendar .react-calendar__month-view__days__day--weekend:nth-child(7n-1) {
+    color: #00F;
+  }
+
+  /* active時の文字の色（選択後の日付の色） */
+.react-calendar__tile--active {
+    color: white !important;
+  }
+  
+  /* 土曜を全部青色にしても今月以外は灰色にする */
+  .react-calendar .react-calendar__month-view__days__day--neighboringMonth {
+    color: #757575 !important;
+  }
