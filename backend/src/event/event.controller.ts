@@ -1,4 +1,4 @@
-import { Body, Controller, Post, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Post, ValidationPipe } from '@nestjs/common';
 import { EventService } from './event.service';
 import { EventDto } from './dto/event.dto';
 
@@ -9,5 +9,10 @@ export class EventController {
   @Post('/create')
   create(@Body(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true })) eventDto: EventDto) {
     return this.eventService.create(eventDto);
+  }
+
+  @Get('/getEvents/:userId')
+  getLabels(@Param('userId', ParseIntPipe) userId: number) {
+    return this.eventService.getEvents(userId);
   }
 }

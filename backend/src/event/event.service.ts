@@ -50,4 +50,10 @@ export class EventService {
       throw new InternalServerErrorException('予定の登録に失敗しました');
     }
   }
+
+  async getEvents(user_id: number) {
+    return this.prisma.event.findMany({
+      where: { user_id: user_id },
+    });
+  }
 }
