@@ -4,10 +4,11 @@ import { useRouter } from 'next/navigation';
 import Calender from '../../../components/Calendar';
 import CreateEvent from '../../../components/CreateEvent';
 import EventListArea from '../../../components/EventListArea';
-import Link from 'next/link';
+import type { Value } from "react-calendar/dist/cjs/shared/types";
 
 export default function CalendarPage() {
   const router = useRouter();
+  const [selectedDate, setSelectedDate] = useState<Value>(new Date());
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -26,17 +27,13 @@ export default function CalendarPage() {
     return <div>読み込み中...</div>;
   }
 
-  function logout() {
-    localStorage.removeItem('access_token');
-    router.push('/login');
-  }
 
   // 認証が成功した場合に表示されるページ内容
   return (
     <div className="flex">
       <CreateEvent/>
-      <Calender/>
-      <EventListArea/>
+      <Calender value={selectedDate} onChange={setSelectedDate} />
+      <EventListArea date={selectedDate} />
     </div>
   );
 }
