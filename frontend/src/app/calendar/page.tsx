@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Calender from '../../../components/Calendar';
 import CreateEvent from '../../../components/CreateEvent';
+import EventListArea from '../../../components/EventListArea';
 import Link from 'next/link';
 
 export default function CalendarPage() {
@@ -35,6 +36,7 @@ export default function CalendarPage() {
     <div className="flex">
       <CreateEvent/>
       <Calender/>
+      <EventListArea/>
     </div>
   );
 }
