@@ -51,9 +51,24 @@ export class EventService {
     }
   }
 
+  // ユーザIDごとの予定の取得
   async getEvents(user_id: number) {
     return this.prisma.event.findMany({
-      where: { user_id: user_id },
+      where: {
+        user_id: user_id
+      },
+      select: {
+        title: true,
+        is_allday: true,
+        start_time: true,
+        finish_time: true,
+        break_minutes: true,
+        workplace: {
+          select: {
+            name: true,
+          },
+        },
+      },
     });
   }
 }
