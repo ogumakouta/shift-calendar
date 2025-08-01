@@ -180,6 +180,7 @@ export default function CreateEvent() {
             className="p-2 border rounded-md disabled:bg-gray-100 disabled:opacity-70 disabled:cursor-not-allowed"
             disabled={eventType === '予定' || eventType === ''}
           >
+            <option value=""></option>
             {workplace.map((workplace) => (
               <option key={workplace.id} value={workplace.id}>{workplace.name}</option>
             ))}
