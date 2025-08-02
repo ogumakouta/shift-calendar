@@ -72,6 +72,7 @@ export default function CalendarPage() {
       <Calender value={selectedDate} onChange={setSelectedDate} />
       <div className='w-[280px]'>
         <EventListArea date={selectedDate} events={events}/>
+        <MonthlySalaryArea date={selectedDate} events={events}/>
       </div>
     </div>
   );
