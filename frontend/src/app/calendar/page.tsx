@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import Calender from '../../../components/Calendar';
 import CreateEvent from '../../../components/CreateEvent';
 import EventListArea from '../../../components/EventListArea';
+import MonthlySalaryArea from '../../../components/MonthlySalaryArea';
 import type { Value } from "react-calendar/dist/cjs/shared/types";
 
 export default function CalendarPage() {
@@ -33,7 +34,10 @@ export default function CalendarPage() {
     <div className="flex">
       <CreateEvent/>
       <Calender value={selectedDate} onChange={setSelectedDate} />
-      <EventListArea date={selectedDate} />
+      <div className='w-[280px]'>
+        <EventListArea date={selectedDate} />
+        <MonthlySalaryArea/>
+      </div>
     </div>
   );
 }
