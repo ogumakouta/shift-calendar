@@ -20,4 +20,10 @@ export class WorkplaceController {
   getLabels(@Param('userId', ParseIntPipe) userId: number) {
     return this.workplaceService.getWorkplaces(userId);
   }
+
+  // バイト先の時給取得
+  @Get('getWorkplaceWage/:workplaceId')
+  getWorkplaceWage(@Param('workplaceId', ParseIntPipe) workplaceId: number) {
+    return this.workplaceService.getWorkplaceWage(workplaceId);
+  }
 }
