@@ -12,10 +12,32 @@ import { EventModule } from './event/event.module';
 import { WorkplaceService } from './workplace/workplace.service';
 import { WorkplaceController } from './workplace/workplace.controller';
 import { WorkplaceModule } from './workplace/workplace.module';
+import { EventLavelService } from './event-label/event-label.service';
+import { EventLavelController } from './event-label/event-label.controller';
+import { EventLavelModule } from './event-label/event-label.module';
 
 @Module({
-  imports: [UserModule, AuthModule, EventModule, WorkplaceModule],
-  controllers: [AppController, AuthController, EventController, WorkplaceController],
-  providers: [AppService, PrismaService, AuthService, EventService, WorkplaceService],
+  imports: [
+    UserModule,
+    AuthModule,
+    EventModule,
+    WorkplaceModule,
+    EventLavelModule,
+  ],
+  controllers: [
+    AppController,
+    AuthController,
+    EventController,
+    WorkplaceController,
+    EventLavelController,
+  ],
+  providers: [
+    AppService,
+    PrismaService,
+    AuthService,
+    EventService,
+    WorkplaceService,
+    EventLavelService,
+  ],
 })
 export class AppModule {}

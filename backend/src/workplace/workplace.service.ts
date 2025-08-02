@@ -36,4 +36,23 @@ export class WorkplaceService {
       throw new InternalServerErrorException('バイト先の登録に失敗しました');
     }
   }
+
+  // バイト先取得
+  async getWorkplaces(user_id: number) {
+    return this.prisma.workplace.findMany({
+      where: { user_id: user_id },
+    });
+  }
+
+  // バイト先の時給取得
+  async getWorkplaceWage(workplace_id: number) {
+    return this.prisma.workplace.findFirst({
+      where: {id: workplace_id},
+      select: {
+        id: true,
+        name: true,
+        hourly_wage: true,
+      }
+    });
+  }
 }
