@@ -58,6 +58,7 @@ export class EventService {
         user_id: user_id
       },
       select: {
+        id: true,
         title: true,
         is_allday: true,
         start_time: true,
@@ -65,6 +66,7 @@ export class EventService {
         break_minutes: true,
         workplace: {
           select: {
+            id: true,
             name: true,
           },
         },
