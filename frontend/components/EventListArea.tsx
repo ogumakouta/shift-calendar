@@ -91,7 +91,7 @@ export default function EventListArea({ date }: Props) {
 
 
   return (
-    <div className="bg-[#fbfbfb] ml-5 mr-5 rounded-md max-w-[280px] w-full h-[362.5px] text-center p-2 flex flex-col">
+    <div className="bg-[#fbfbfb] ml-5 mr-5 mb-2 rounded-md max-w-[280px] w-full h-[360.5px] text-center p-2 flex flex-col">
       <div>
         {error}
       </div>
