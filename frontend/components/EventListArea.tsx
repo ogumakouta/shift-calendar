@@ -1,70 +1,20 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import { jwtDecode } from "jwt-decode";
 import type { Value } from "react-calendar/dist/cjs/shared/types";
 
 
 // 親コンポーネントから受け取るpropsの型定義
 type Props = {
   date: Value;
+  events: any[];
 };
 
 
-export default function EventListArea({ date }: Props) {
-  const [user_id, setUser_id] = useState('');
-  const [events, setEvents] = useState([]);
-  const [error, setError] = useState('');
-
+export default function EventListArea({ date, events }: Props) {
   // カレンダーで選択した日付を格納
   const selectDate = date instanceof Date ? date.toLocaleDateString("ja-JP") : "日付が選択されていません";
-
-  // APIのエンドポイントを.envから読み込む
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL
-
-
-  // ユーザごとのイベント一覧を取得する関数
-  async function getEvents (apiUrl, user_id) {
-    const res = await fetch(`${apiUrl}/event/getEvents/${user_id}`);
-    if (!res.ok) {
-      throw new Error('予定の取得に失敗しました');
-    }
-
-    return res.json();
-  }
-
-
-  // ユーザIDをLocalStorageから取得
-  useEffect (() => {
-    const token = localStorage.getItem('access_token');
-    if (token) {
-      try {
-        const decodeToken = jwtDecode(token);
-        setUser_id(decodeToken.sub);
-        console.log('ユーザID: ', decodeToken.sub);
-      } catch(error) {
-        console.log('ユーザIDが見つかりません: ',error)
-        setError('ログイン情報が無効です。再度ログインしてください。');
-      }
-    }
-  }, []);
-
-
-  // ユーザIDごとの予定を取得
-  useEffect (() => {
-    const getAndSetEvents = async () => {
-      if (user_id) {
-        try{
-          const getedEvents = await getEvents(apiUrl, user_id);
-          setEvents(getedEvents);
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    };
-
-    getAndSetEvents();
-  }, [user_id]);
+  console.log('選択された日付：',selectDate);
 
 
   // ISO8601形式の時間から⚪︎時⚪︎分を取得する関数
@@ -92,9 +42,6 @@ export default function EventListArea({ date }: Props) {
 
   return (
     <div className="bg-[#fbfbfb] ml-5 mr-5 mb-2 rounded-md max-w-[280px] w-full h-[360.5px] text-center p-2 flex flex-col">
-      <div>
-        {error}
-      </div>
       <div className='text-xl mb-2'>{selectDate}の予定</div>
       <div className='text-center overflow-y-auto flex-grow'>
         {/* 日付ごとの予定を表示 */}
