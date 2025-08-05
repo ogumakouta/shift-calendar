@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  # Nginx リバースプロキシ
+  nginx:
+    image: nginx:latest
+    ports:
+      # 外部からの80番ポートをすべて受け付ける
+      - "80:80"
+    volumes:
+      # Nginxの設定ファイルをコンテナに読み込ませる
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - backend
+      - frontend
+
+  backend:
+    build: ./backend
+    env_file:
+      - ./backend/.env
+
+  frontend:
+    build:
+      context: ./frontend
