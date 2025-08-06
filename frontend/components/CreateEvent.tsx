@@ -1,11 +1,11 @@
 'use client';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 import { jwtDecode } from "jwt-decode";
 
 
-export default function CreateEvent() {
+export default function CreateEvent({ onEventCreated }) {
   const [eventType, setEventType] = useState('');
   const [user_id, setUser_id] = useState('');
   const [title, setTitle] = useState('');
@@ -20,10 +20,23 @@ export default function CreateEvent() {
   const [location, setLocation] = useState('');
   const [memo, setMemo] = useState('');
   const [message, setMessage] = useState('');
-  const router = useRouter();
+  // const router = useRouter();
 
   // apiから取得した選択肢を配列で管理
   const [labels, setLabels] = useState([]);
+
+  // フォームの値をクリアする関数
+  const clearForm = () => {
+    setEventType('');
+    setTitle('');
+    setSelectedWorkplace('');
+    setIsAllday(false);
+    setStartTime('');
+    setFinishTime('');
+    setBreakMinutes('');
+    setLocation('');
+    setMemo('');
+  };
 
   // ユーザIDをLocalStorageから取得
   useEffect (() => {
@@ -125,12 +138,17 @@ export default function CreateEvent() {
 
     try {
       // エラーがなければ、常にこの処理が実行される
-      setMessage(''); // 以前のエラーをクリア
+      setMessage('');
       const res = await axios.post(`${apiUrl}/event/create`, payload);
       console.log('レスポンス：', res.data);
       setMessage('予定を追加しました');
       
-      // 成功した場合の処理（例：ページ遷移、フォームクリアなど）
+      // フォームクリア
+      clearForm();
+
+      if (onEventCreated) {
+        onEventCreated(); // 親コンポーネントに通知！
+      }
     } catch (error: any) {
       if (error.response?.data?.message) {
         setMessage(error.response.data.message);
@@ -148,7 +166,7 @@ export default function CreateEvent() {
     <h1 className='text-center text-3xl'>予定の追加</h1>
       <form 
         onSubmit={handleSubmit} 
-        className="flex flex-col gap-2 max-w-[265px] mx-auto p-8 pt-0 m-0"
+        className="flex flex-col gap-2 max-w-[265px] mx-auto p-8 pt-0 pb-0 m-0"
       >
         <div className="text-center text-red-500">
           {message}
