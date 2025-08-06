@@ -6,7 +6,7 @@ import { jwtDecode } from "jwt-decode";
 
 
 export default function CreateEvent() {
-  const [eventType, setEvemtType] = useState('');
+  const [eventType, setEventType] = useState('');
   const [user_id, setUser_id] = useState('');
   const [title, setTitle] = useState('');
   const [selectedWorkplace, setSelectedWorkplace] = useState('');
@@ -159,7 +159,7 @@ export default function CreateEvent() {
           <select
             id="eventType"
             value={eventType}
-            onChange={(e) => setEvemtType(e.target.value)}
+            onChange={(e) => setEventType(e.target.value)}
             className="p-2 border rounded-md"
           >
             <option value=""></option>
@@ -185,7 +185,7 @@ export default function CreateEvent() {
             value={selectedWorkplace}
             onChange={(e) => setSelectedWorkplace(e.target.value)}
             className="p-2 border rounded-md disabled:bg-gray-100 disabled:opacity-70 disabled:cursor-not-allowed"
-            disabled={eventType !== 'バイト' || eventType === ''}
+            disabled={eventType !== 'バイト'}
           >
             <option value=""></option>
             {workplace.map((workplace) => (
@@ -231,7 +231,7 @@ export default function CreateEvent() {
             value={breakMinutes}
             onChange={(e) => setBreakMinutes(e.target.value)}
             className="p-2 border rounded-md disabled:bg-gray-100 disabled:opacity-70 disabled:cursor-not-allowed"
-            disabled={eventType !== 'バイト' || eventType === ''}
+            disabled={eventType !== 'バイト'}
           >
             {Array.from({ length: 61 }, (_, i) => i).map(minute => (
               <option key={minute} value={minute}>
