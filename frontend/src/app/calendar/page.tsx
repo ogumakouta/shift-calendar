@@ -28,6 +28,7 @@ export default function CalendarPage() {
   const [selectedDate, setSelectedDate] = useState<Value>(new Date());
   const [events, setEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [eventUpdateTrigger, setEventUpdateTrigger] = useState(0);
 
   useEffect(() => {
     // access_tokenを取得
@@ -58,17 +59,22 @@ export default function CalendarPage() {
     };
 
     getAndSetEvents();
-  }, [user_id]);
+  }, [user_id, eventUpdateTrigger]);
 
   if (isLoading) {
     return <div>読み込み中...</div>;
   }
 
+  const handleEventCreated = () => {
+    // トリガーの状態を更新してuseEffectを再実行させる
+    setEventUpdateTrigger(prev => prev + 1);
+  };
+
 
   // 認証が成功した場合に表示されるページ内容
   return (
     <div className="flex">
-      <CreateEvent/>
+      <CreateEvent onEventCreated={handleEventCreated} />
       <Calender value={selectedDate} onChange={setSelectedDate} />
       <div className='w-[280px]'>
         <EventListArea date={selectedDate} events={events}/>
