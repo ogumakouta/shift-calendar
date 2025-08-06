@@ -8,7 +8,12 @@ export class EventLavelService {
   // 予定のラベルの取得
   async getLabels(user_id: number) {
     return this.prisma.eventLabel.findMany({
-      where: { user_id: user_id },
+      where: {
+        OR: [
+          { user_id: user_id },
+          { common: true },
+        ],
+      },
     });
   }
 }
