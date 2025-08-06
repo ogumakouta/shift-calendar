@@ -19,7 +19,7 @@ export default function CreateEvent() {
   const [breakMinutes, setBreakMinutes] = useState('');
   const [location, setLocation] = useState('');
   const [memo, setMemo] = useState('');
-  const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
   const router = useRouter();
 
   // apiから取得した選択肢を配列で管理
@@ -34,7 +34,7 @@ export default function CreateEvent() {
         setUser_id(decodeToken.sub);
       } catch(error) {
         console.log('ユーザIDが見つかりません；',error)
-        setError('ログイン情報が無効です。再度ログインしてください。');
+        setMessage('ログイン情報が無効です。再度ログインしてください。');
       }
     }
   }, []);
@@ -100,51 +100,58 @@ export default function CreateEvent() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-
-    const formData = new FormData(e.currentTarget);
-    const eventName = formData.get('eventName');
-    const eventDate = formData.get('eventDate');
-    console.log({ eventName, eventDate });
-
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError('');
+    setMessage('');
 
-    // 予定作成のリクエスト送信
-    axios.post(`${apiUrl}/event/create`, {
+    if (!title || !startTime || !finishTime) {
+      setMessage('必須項目を全て入力してください');
+      return;
+    } else if (eventType === 'バイト' && !selectedWorkplace) {
+      setMessage('勤務先を選択してください');
+      return;
+    }
+    const payload = {
       user_id: user_id,
       title: title,
-      workplace_id: eventType === '予定' ? null : parseInt(selectedWorkplace, 10),
+      workplace_id: eventType !== 'バイト' ? null : parseInt(selectedWorkplace, 10),
       is_allday: isAllday,
       start_time: ISOStartTime,
       finish_time: ISOFinishTime,
-      break_minutes: eventType === '予定' ? null : parseInt(breakMinutes, 10),
+      break_minutes: eventType !== 'バイト' ? null : parseInt(breakMinutes, 10),
       location: location,
       memo: memo
-    })
-    .then(res => {
-        console.log('レスポンス：', res.data);
-    })
-    .catch((error: any) => {
-        if (error.response && error.response.data && error.response.data.message) {
-            setError(error.response.data.message);
-            console.log('エラー内容:', error.response.data);
-        } else {
-            setError('予定の登録に失敗しました');
-            console.log('その他のエラー:', error);
-        }
-    });
-  };
+    };
+
+    try {
+      // エラーがなければ、常にこの処理が実行される
+      setMessage(''); // 以前のエラーをクリア
+      const res = await axios.post(`${apiUrl}/event/create`, payload);
+      console.log('レスポンス：', res.data);
+      setMessage('予定を追加しました');
+      
+      // 成功した場合の処理（例：ページ遷移、フォームクリアなど）
+    } catch (error: any) {
+      if (error.response?.data?.message) {
+        setMessage(error.response.data.message);
+        console.log('エラー内容:', error.response.data);
+      } else {
+        setMessage('予定の登録に失敗しました');
+        console.log('その他のエラー:', error);
+      }
+    }
+  }
+
 
   return (
     <div>
     <h1 className='text-center text-3xl'>予定の追加</h1>
       <form 
         onSubmit={handleSubmit} 
-        className="flex flex-col gap-2 max-w-md mx-auto p-8 pt-0 m-0"
+        className="flex flex-col gap-2 max-w-[265px] mx-auto p-8 pt-0 m-0"
       >
         <div className="text-center text-red-500">
-          {error}
+          {message}
         </div>
         <input type="hidden" id='user_id' value={user_id} />
         <div className="flex flex-col">
@@ -178,7 +185,7 @@ export default function CreateEvent() {
             value={selectedWorkplace}
             onChange={(e) => setSelectedWorkplace(e.target.value)}
             className="p-2 border rounded-md disabled:bg-gray-100 disabled:opacity-70 disabled:cursor-not-allowed"
-            disabled={eventType === '予定' || eventType === ''}
+            disabled={eventType !== 'バイト' || eventType === ''}
           >
             <option value=""></option>
             {workplace.map((workplace) => (
@@ -224,7 +231,7 @@ export default function CreateEvent() {
             value={breakMinutes}
             onChange={(e) => setBreakMinutes(e.target.value)}
             className="p-2 border rounded-md disabled:bg-gray-100 disabled:opacity-70 disabled:cursor-not-allowed"
-            disabled={eventType === '予定' || eventType === ''}
+            disabled={eventType !== 'バイト' || eventType === ''}
           >
             {Array.from({ length: 61 }, (_, i) => i).map(minute => (
               <option key={minute} value={minute}>
