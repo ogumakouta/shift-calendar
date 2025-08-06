@@ -69,6 +69,7 @@ model EventLabel {
   user_id Int
   name  String @db.Text
   color String @db.Text
+  common Boolean @default(false)
   user         User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@map("event_labels")
