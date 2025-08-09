@@ -2,16 +2,18 @@
 
 import { useState, useEffect } from 'react';
 import type { Value } from "react-calendar/dist/cjs/shared/types";
+import DeleteEventButton from './DeleteEventButton';
 
 
 // 親コンポーネントから受け取るpropsの型定義
 type Props = {
   date: Value;
   events: any[];
+  onEventCreated: () => void;
 };
 
 
-export default function EventListArea({ date, events }: Props) {
+export default function EventListArea({ date, events, onEventCreated }: Props) {
   // カレンダーで選択した日付を格納
   const selectDate = date instanceof Date ? date.toLocaleDateString("ja-JP") : "日付が選択されていません";
   console.log('選択された日付：',selectDate);
@@ -57,6 +59,7 @@ export default function EventListArea({ date, events }: Props) {
                   {event.workplace && <div>勤務先：{event.workplace.name}</div>}
                   {event.location && <div>場所：{event.location}</div>}
                   {event.memo && <div>メモ：{event.memo}</div>}
+                  <div className='text-right mr-2'><DeleteEventButton eventId={event.id}  onEventCreated={onEventCreated} /></div>
                 </div>
               </details>
             </div>

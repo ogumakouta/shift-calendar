@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, ValidationPipe } from '@nestjs/common';
 import { EventService } from './event.service';
 import { EventDto } from './dto/event.dto';
 
@@ -16,7 +16,7 @@ export class EventController {
     return this.eventService.getEvents(userId);
   }
 
-  @Get('/deleteEvent/:userId/:id')
+  @Delete('/deleteEvent/:userId/:id')
   deleteEvent(@Param('userId', ParseIntPipe) userId: number, @Param('id', ParseIntPipe) id: number) {
     return this.eventService.deleteEvent(userId, id);
   }
