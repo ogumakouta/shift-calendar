@@ -73,4 +73,14 @@ export class EventService {
       },
     });
   }
+
+  // 予定を削除
+  async deleteEvent(user_id: number, id: number) {
+    return this.prisma.event.delete({
+      where: {
+        id: id,
+        user_id: user_id,
+      },
+    });
+  }
 }

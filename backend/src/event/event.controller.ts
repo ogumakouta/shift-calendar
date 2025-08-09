@@ -15,4 +15,9 @@ export class EventController {
   getLabels(@Param('userId', ParseIntPipe) userId: number) {
     return this.eventService.getEvents(userId);
   }
+
+  @Get('/deleteEvent/:userId/:id')
+  deleteEvent(@Param('userId', ParseIntPipe) userId: number, @Param('id', ParseIntPipe) id: number) {
+    return this.eventService.deleteEvent(userId, id);
+  }
 }
