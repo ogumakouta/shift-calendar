@@ -1,6 +1,5 @@
 'use client';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { jwtDecode } from "jwt-decode";
 
 
@@ -45,7 +44,7 @@ export default function CreateEvent({ onEventCreated }) {
         const decodeToken = jwtDecode(token);
         setUser_id(decodeToken.sub);
       } catch(error) {
-        console.log('ユーザIDが見つかりません；',error)
+        console.log('ユーザIDが見つかりません：',error)
         setMessage('ログイン情報が無効です。再度ログインしてください。');
       }
     }
@@ -53,27 +52,37 @@ export default function CreateEvent({ onEventCreated }) {
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL
   useEffect (() => {
-    // 予定の種類用のラベルを取得
-    axios.get(`${apiUrl}/event-label/getLabels/${user_id}`)
-    .then((res) => {
-      console.log(res.data)
-      setLabels(res.data);
-    })
-    .catch((err) => {
-      console.error('ラベルの取得に失敗しました:', err);
-      // setError('予定の種類の取得に失敗しました。');
-    });
+    const fetchData = async () => {
+      if (!user_id) return;
 
-    // 勤務先の取得
-    axios.get(`${apiUrl}/workplace/getWorkplace/${user_id}`)
-    .then((res) => {
-      console.log(res.data)
-      setWorkplace(res.data);
-    })
-    .catch((err) => {
-      console.error('勤務先の取得に失敗しました:', err);
-      // setError('予定の種類の取得に失敗しました。');
-    });
+      // 予定の種類を取得
+      try {
+        const labelsRes = await fetch(`${apiUrl}/event-label/getLabels/${user_id}`);
+        // レスポンスが正常じゃなかったらエラー
+        if (!labelsRes.ok) {
+          throw new Error(`HTTP error! status: ${labelsRes.status}`);
+        }
+        const labelsData = await labelsRes.json();
+        setLabels(labelsData);
+      } catch (err) {
+        console.error('ラベルの取得に失敗しました:', err);
+      }
+
+      // 勤務先を取得
+      try {
+        const workplaceRes = await fetch(`${apiUrl}/workplace/getWorkplace/${user_id}`);
+        // レスポンスが正常じゃなかったらエラー
+        if (!workplaceRes.ok) {
+          throw new Error(`HTTP error! status: ${workplaceRes.status}`);
+        }
+        const workplaceData = await workplaceRes.json();
+        setWorkplace(workplaceData);
+      } catch (err) {
+        console.error('勤務先の取得に失敗しました:', err);
+      }
+    };
+
+    fetchData();
   }, [user_id]);
 
   // 開始時間をISO8601の形式に変換
@@ -150,24 +159,30 @@ export default function CreateEvent({ onEventCreated }) {
     try {
       // エラーがなければ、常にこの処理が実行される
       setMessage('');
-      const res = await axios.post(`${apiUrl}/event/create`, payload);
-      console.log('レスポンス：', res.data);
+      const res = await fetch(`${apiUrl}/event/create`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      // レスポンスが正常じゃない場合
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || '予定の追加に失敗しました');
+      }
+
       setMessage('予定を追加しました');
-      
       // フォームクリア
       clearForm();
 
       if (onEventCreated) {
-        onEventCreated(); // 親コンポーネントに通知！
+        onEventCreated(); // 親コンポーネントに通知
       }
     } catch (error: any) {
-      if (error.response?.data?.message) {
-        setMessage(error.response.data.message);
-        console.log('エラー内容:', error.response.data);
-      } else {
-        setMessage('予定の登録に失敗しました');
-        console.log('その他のエラー:', error);
-      }
+      console.error('予定追加でエラーが発生しました：', error);
+      setMessage('予定の追加に失敗しました');
     }
   }
 
