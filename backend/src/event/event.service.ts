@@ -68,6 +68,8 @@ export class EventService {
         start_time: true,
         finish_time: true,
         break_minutes: true,
+        location: true,
+        memo: true,
         workplace: {
           select: {
             id: true,
