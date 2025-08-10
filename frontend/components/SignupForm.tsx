@@ -1,6 +1,5 @@
 'use client';
 import { useState } from 'react';
-import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -15,7 +14,7 @@ export default function LoginForm() {
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
 
@@ -30,38 +29,55 @@ export default function LoginForm() {
     } else if (password != check_password) { // 入力されたパスワードが一致してるか確認
       setError('パスワードが一致しません');
     } else {
-        // 入力された値が問題なかったらリクエストを送信
-        axios.post(`${apiUrl}/user/create`, {
+      // 入力された値が問題なかったらリクエストを送信
+      try{
+        const res = await fetch(`${apiUrl}/user/create`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
             name: name,
             email: email,
             password: password,
             birthday: birthday ? new Date(birthday) : null,
-        })
-        // 登録に成功したら自動でログインする
-        .then(res => {
-            console.log('レスポンス：', res.data);
-            axios.post(`${apiUrl}/auth/login`, {
-                email: email,
-                password: password,
-            })
-            .then(res => {
-                console.log('レスポンス：', res.data);
-                if (res.data.access_token) {
-                    localStorage.setItem('access_token', res.data.access_token);
-                    router.push('/calendar');
-                }
-            });
-        })
-        // 登録に失敗したときのエラーハンドリング
-        .catch((error: any) => {
-            if (error.response && error.response.data && error.response.data.message) {
-                setError(error.response.data.message);
-                console.log('エラー内容:', error.response.data);
-            } else {
-                setError('登録に失敗しました');
-                console.log('その他のエラー:', error);
-            }
+          }),
         });
+
+        // 登録レスポンスが正常じゃない場合
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.message || '登録に失敗しました');
+        }
+
+        // 登録に成功したら自動でログイン
+        const loginRes = await fetch(`${apiUrl}/auth/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: email,
+            password: password,
+          }),
+        });
+
+        // ログインレスポンスが正常じゃない場合
+        if (!loginRes.ok) {
+          const errorData = await loginRes.json();
+          throw new Error(errorData.message || 'ログインに失敗しました');
+        }
+
+        // 成功したらアクセストークンをlocalStorageに保存してカレンダーページに移動
+        const loginData = await loginRes.json();
+
+        if (loginData.access_token) {
+          localStorage.setItem('access_token', loginData.access_token);
+          router.push('/calendar');
+        }
+      } catch (error: any) {
+        setError('登録に失敗しました');
+      }
     }
   };
 
