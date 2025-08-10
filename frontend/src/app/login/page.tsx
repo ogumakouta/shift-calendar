@@ -7,7 +7,7 @@ export default function LoginPage() {
   return (
     <main>
       <CheckLogin/>
-      <h1 style={{ textAlign: 'center' }}>ログイン</h1>
+      <h1 className='text-center text-3xl'>ログイン</h1>
       <LoginForm />
     </main>
     );

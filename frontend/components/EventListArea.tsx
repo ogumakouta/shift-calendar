@@ -1,6 +1,5 @@
 'use client'
 
-import { useState, useEffect } from 'react';
 import type { Value } from "react-calendar/dist/cjs/shared/types";
 import DeleteEventButton from './DeleteEventButton';
 
