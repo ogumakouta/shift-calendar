@@ -123,6 +123,9 @@ export default function CreateEvent({ onEventCreated }) {
     } else if (eventType === 'バイト' && !selectedWorkplace) {
       setMessage('勤務先を選択してください');
       return;
+    } else if (new Date(finishTime) - new Date(startTime) <= 0) {
+      setMessage('終了時間は開始時間より後に設定してください');
+      return;
     }
     const payload = {
       user_id: user_id,
