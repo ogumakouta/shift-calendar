@@ -1,6 +1,5 @@
 'use client';
 import { useState } from 'react';
-import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -13,29 +12,37 @@ export default function LoginForm() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL
 //   console.log(apiUrl);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
-    axios.post(`${apiUrl}/auth/login`, {
-        email: email,
-        password: password,
-    })
-    .then(res => {
-        console.log('レスポンス：', res.data);
-        if (res.data.access_token) {
-            localStorage.setItem('access_token', res.data.access_token);
-            router.push('/calendar');
-        }
-    })
-    .catch((error: any) => {
-        if (error.response && error.response.data && error.response.data.message) {
-            setError(error.response.data.message);
-            console.log('エラー内容:', error.response.data);
-        } else {
-            setError('ログインに失敗しました');
-            console.log('その他のエラー:', error);
-        }
-    });
+    try {
+      const res = await fetch(`${apiUrl}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      });
+
+      // ログインレスポンスが正常じゃない場合
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'ログインに失敗しました');
+      }
+
+      // 成功したらアクセストークンをlocalStorageに保存してカレンダーページに移動
+      const loginData = await res.json();
+
+      if (loginData.access_token) {
+        localStorage.setItem('access_token', loginData.access_token);
+        router.push('/calendar');
+      }
+    } catch (error: any) {
+      setError('ログインに失敗しました');
+    }
   };
 
   return (
