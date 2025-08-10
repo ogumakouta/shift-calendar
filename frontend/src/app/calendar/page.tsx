@@ -75,7 +75,7 @@ export default function CalendarPage() {
   return (
     <div className="flex">
       <CreateEvent onEventCreated={handleEventCreated} />
-      <Calender value={selectedDate} onChange={setSelectedDate} />
+      <Calender value={selectedDate} onChange={setSelectedDate} events={events}/>
       <div className='w-[280px]'>
         <EventListArea date={selectedDate} events={events} onEventCreated={handleEventCreated}/>
         <MonthlySalaryArea date={selectedDate} events={events}/>
