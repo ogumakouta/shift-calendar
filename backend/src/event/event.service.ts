@@ -9,6 +9,7 @@ export class EventService {
   async create(eventDto: EventDto) {
     const {
       user_id,
+      event_label_id,
       title,
       workplace_id,
       is_allday,
@@ -23,6 +24,7 @@ export class EventService {
       const event = await this.prisma.event.create({
         data: {
           user_id,
+          event_label_id,
           title,
           workplace_id: workplace_id ? Number(workplace_id) : null,
           is_allday,
@@ -34,6 +36,7 @@ export class EventService {
         },
         select: {
           user_id: true,
+          event_label_id: true,
           title: true,
           workplace_id: true,
           is_allday: true,
@@ -59,6 +62,7 @@ export class EventService {
       },
       select: {
         id: true,
+        // event_label_id: true,
         title: true,
         is_allday: true,
         start_time: true,

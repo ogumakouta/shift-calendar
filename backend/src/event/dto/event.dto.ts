@@ -12,6 +12,10 @@ export class EventDto {
   @IsNotEmpty()
   user_id: number;
 
+  @IsInt()
+  @IsNotEmpty()
+  event_label_id: number;
+
   @IsString()
   @IsNotEmpty()
   title: string;

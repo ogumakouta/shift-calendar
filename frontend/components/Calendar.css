@@ -14,8 +14,9 @@
     height: 117px;
     outline: 1px solid #d2d2d2;
     display: flex;
-    align-items: start;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
 }
 
 /* 土曜日だけ青色にする */
@@ -27,8 +28,17 @@
 .react-calendar__tile--active {
     color: white !important;
 }
-  
+
   /* 土曜を全部青色にしても今月以外は灰色にする */
 .react-calendar .react-calendar__month-view__days__day--neighboringMonth {
     color: #757575 !important;
+}
+
+.event-marker {
+    width: 8px;
+    height: 8px;
+    background-color: #4ab2e7; /* Tailwindのred-400のような色 */
+    border-radius: 50%;
+    margin: 0 auto; /* 中央寄せ */
+    margin-top: 20px; /* 日付の数字からのマージン */
 }

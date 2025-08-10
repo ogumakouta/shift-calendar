@@ -46,20 +46,22 @@ model Workplace {
 }
 
 model Event {
-  id            Int        @id @default(autoincrement())
-  user_id       Int
-  title         String
-  workplace_id  Int?
-  is_allday     Boolean    @default(false)
-  start_time    DateTime
-  finish_time   DateTime
-  break_minutes Int?
-  location      String?    @db.Text
-  memo          String?    @db.Text
-  created_at    DateTime   @default(now())
-  updated_at    DateTime   @updatedAt
-  user          User       @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  workplace     Workplace? @relation(fields: [workplace_id], references: [id], onDelete: SetNull)
+  id             Int        @id @default(autoincrement())
+  user_id        Int
+  event_label_id Int
+  title          String
+  workplace_id   Int?
+  is_allday      Boolean    @default(false)
+  start_time     DateTime
+  finish_time    DateTime
+  break_minutes  Int?
+  location       String?    @db.Text
+  memo           String?    @db.Text
+  created_at     DateTime   @default(now())
+  updated_at     DateTime   @updatedAt
+  user           User       @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  event_label   EventLabel @relation(fields: [event_label_id], references: [id], onDelete: Cascade)
+  workplace      Workplace? @relation(fields: [workplace_id], references: [id], onDelete: SetNull)
 
   @@map("events")
 }
@@ -71,6 +73,7 @@ model EventLabel {
   color   String  @db.Text
   common  Boolean @default(false)
   user    User?   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  events        Event[]
 
   @@map("event_labels")
 }
