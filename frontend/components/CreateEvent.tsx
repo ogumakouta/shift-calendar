@@ -1,7 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-// import { useRouter } from 'next/navigation';
 import { jwtDecode } from "jwt-decode";
 
 
@@ -21,7 +20,6 @@ export default function CreateEvent({ onEventCreated }) {
   const [location, setLocation] = useState('');
   const [memo, setMemo] = useState('');
   const [message, setMessage] = useState('');
-  // const router = useRouter();
 
   // apiから取得した選択肢を配列で管理
   const [labels, setLabels] = useState([]);
