@@ -10,7 +10,6 @@ export default function LoginForm() {
   const router = useRouter();
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL
-//   console.log(apiUrl);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
