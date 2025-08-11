@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import LogoutButton from "../../components/LogoutButton";
+import SettingPageButton from "../../components/SettingPageButton";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,7 +31,10 @@ export default function RootLayout({
       >
       <div className="flex p-5 justify-between items-center">
         <h1 className="header text-5xl mt-5 mb-5">シフトカレンダー</h1>
-        <LogoutButton/>
+        <nav className="flex items-center">
+          <SettingPageButton/>
+          <LogoutButton/>
+        </nav>
       </div>
         {children}
       </body>
