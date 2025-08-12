@@ -1,6 +1,7 @@
 import { Injectable, ConflictException, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create_user.dto';
+import { GetUserDto } from './dto/get_user.dto'
 import * as bcrypt from 'bcrypt';
 import { Prisma } from '@prisma/client';
 
@@ -52,6 +53,21 @@ export class UserService {
   async findOneByEmail(email: string) {
     return this.prisma.user.findUnique({
       where: { email },
+    });
+  }
+
+  // ユーザ情報を取得
+  async getUser(getUserDto: GetUserDto) {
+    const { id } = getUserDto;
+    return this.prisma.user.findUnique({
+      where: {
+        id: id
+      },
+      select: {
+        name: true,
+        email: true,
+        birthday: true,
+      },
     });
   }
 }
