@@ -1,6 +1,8 @@
-import { Injectable, ConflictException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, ConflictException, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create_user.dto';
+import { GetUserDto } from './dto/get_user.dto';
+import { UpdateUserDto } from './dto/update_user.dto';
 import * as bcrypt from 'bcrypt';
 import { Prisma } from '@prisma/client';
 
@@ -53,5 +55,37 @@ export class UserService {
     return this.prisma.user.findUnique({
       where: { email },
     });
+  }
+
+  // ユーザ情報を取得
+  async getUser(getUserDto: GetUserDto) {
+    const { id } = getUserDto;
+    return this.prisma.user.findUnique({
+      where: {
+        id: id
+      },
+      select: {
+        name: true,
+        email: true,
+        birthday: true,
+      },
+    });
+  }
+
+  // ユーザ情報を更新
+  async updateUser(updateUserDto: UpdateUserDto, userId: number) {
+    try {
+      return this.prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: updateUserDto,
+      });
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException(`ID：${userId}のユーザは見つかりません`);
+      }
+      throw error;
+    }
   }
 }
