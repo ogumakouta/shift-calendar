@@ -1,7 +1,11 @@
 'use client'
 
+import UserSettingForm from "../../../components/UserSettingForm";
+
 export default function SettingPage() {
   return (
-    <h1>設定</h1>
+    <div>
+      <UserSettingForm/>
+    </div>
   );
 }
