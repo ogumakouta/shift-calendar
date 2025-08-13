@@ -1,6 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { UpdateLabelDto } from './dto/update_label.dto';
+import { CreateLabelDto } from './dto/create_label.dto';
 
 @Injectable()
 export class EventLavelService {
@@ -44,5 +45,32 @@ export class EventLavelService {
         user_id: user_id,
       },
     });
+  }
+
+  // 予定ラベルの追加
+  async createLabel(createLabelDto: CreateLabelDto, ) {
+    const {
+      name,
+      user_id,
+    } = createLabelDto;
+
+    try {
+      const eventLabel = await this.prisma.eventLabel.create({
+        data: {
+          name,
+          user_id,
+        },
+        select: {
+          id: true,
+          name: true,
+          user_id: true,
+          common: true,
+        },
+      });
+
+      return eventLabel;
+    } catch {
+      throw new InternalServerErrorException('予定の種類の登録に失敗しました');
+    }
   }
 }
