@@ -35,4 +35,14 @@ export class EventLavelService {
       throw error;
     }
   }
+
+  // 予定ラベルの削除
+  async deleteEventLabel(user_id: number, label_id: number) {
+    return this.prisma.eventLabel.delete({
+      where: {
+        id: label_id,
+        user_id: user_id,
+      },
+    });
+  }
 }
