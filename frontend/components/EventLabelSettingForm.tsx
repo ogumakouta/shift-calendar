@@ -99,7 +99,33 @@ export default function EventLabelSettingForm({ user_id }: Props) {
     }
   }
 
-  const handleDel = async (id: number | string) => {
+  // 予定の種類を削除する処理
+  const handleDel = async (user_id: number | string, label_id: number | string) => {
+    // 削除対象のラベルを探す
+    const targetLabel = labels.find(label => label.id === label_id);
+    if (!targetLabel) return;
+
+    // 対象ラベルが「バイト」か「予定」だったら処理を中断
+    if (targetLabel.name === "予定" || targetLabel.name === "バイト") {
+      setMessage('「バイト」と「予定」は削除できません');
+      return;
+    }
+
+    // 削除対象のラベルが見つかったら削除リクエストを送信
+    setLabels(prevLabels => prevLabels.filter(label => label.id !== label_id));
+    try {
+      const res = await fetch(`${apiUrl}/event-label/deleteEventLabel/${user_id}/${label_id}`, {
+        method: 'DELETE',
+      });
+
+      if (!res) {
+        setMessage('種類名の削除に失敗しました');
+        throw new Error('種類名の削除に失敗しました');
+      }
+      setMessage(`${targetLabel.name}を削除しました`);
+    } catch (error) {
+      setMessage('種類名の削除に失敗しました');
+    }
   }
 
   const handleAdd = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -133,15 +159,13 @@ export default function EventLabelSettingForm({ user_id }: Props) {
                 type="button"
                 onClick={() => handleUpdate(user_id, label.id)}
                 className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors w-[70px] h-[50px]  ml-3 mr-3"
-                disabled={label.common === 1}
               >
                 更新
               </button>
               <button 
                 type="button"
-                onClick={handleDel}
+                onClick={() => handleDel(user_id, label.id)}
                 className="p-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors w-[70px] h-[50px]"
-                disabled={label.common === 1}
               >
                 削除
               </button>
