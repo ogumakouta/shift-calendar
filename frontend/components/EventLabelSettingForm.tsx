@@ -38,6 +38,7 @@ const getEventLabels = async (user_id) => {
 export default function EventLabelSettingForm({ user_id }: Props) {
   const [message, setMessage] = useState('');
   const [name, setName] = useState('');
+  const [newLabelName, setNewLabelName] = useState('');
   const [labels, setLabels] = useState<Label[]>([]);
 
 
@@ -128,8 +129,30 @@ export default function EventLabelSettingForm({ user_id }: Props) {
     }
   }
 
+  // 予定の種類を追加する処理
   const handleAdd = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!newLabelName.trim()) return;
+
+    const targetLabel = labels.find(label => label.name === newLabelName);
+    if (targetLabel) {
+      setMessage(`${newLabelName}は既に存在しています`)
+      return;
+    }
+
+    try {
+      const res = await fetch(`${apiUrl}/event-label/createLabel`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newLabelName, user_id: user_id }),
+      });
+      if (!res.ok) throw new Error('追加に失敗しました');
+      const createdLabel = await res.json();
+      // stateを更新して画面に反映
+      setLabels(prevLabels => [...prevLabels, createdLabel]);
+      setNewLabelName(''); // 入力欄をクリア
+      setMessage(`「${newLabelName}」を追加しました。`);
+    } catch(err) { console.error(err); }
   }
 
   return (
@@ -175,22 +198,26 @@ export default function EventLabelSettingForm({ user_id }: Props) {
         ) : (
           <div className="mt-4 text-gray-500">予定の種類は登録されていません。</div>
         )}
-        <div className="flex flex-col gap-2 mt-7">
-          <label htmlFor="name" className="font-semibold">追加する種類名:</label>
-          <input
-            type="text"
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="p-2 border rounded-md"
-          />
-        </div>
-        <button 
-          type="submit"
-          className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
-        >
-          追加
-        </button>
+
+        <form onSubmit={handleAdd}>
+          <div className="flex flex-col gap-2 mt-7">
+            <label htmlFor="name" className="font-semibold">追加する種類名:</label>
+            <input
+              type="text"
+              id="new-name"
+              value={newLabelName}
+              onChange={(e) => setNewLabelName(e.target.value)}
+              className="p-2 border rounded-md"
+              placeholder="例：サークル"
+            />
+          </div>
+          <button 
+            type="submit"
+            className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors w-full mt-4"
+          >
+            追加
+          </button>
+        </form>
       </div>
     </div>
   );
