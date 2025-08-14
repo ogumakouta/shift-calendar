@@ -74,4 +74,14 @@ export class WorkplaceService {
       throw error;
     }
   }
+
+  // バイト先の削除
+  async deleteWorkplace(user_id: number, workplace_id: number) {
+    return this.prisma.workplace.delete({
+      where: {
+        id: workplace_id,
+        user_id: user_id,
+      },
+    });
+  }
 }

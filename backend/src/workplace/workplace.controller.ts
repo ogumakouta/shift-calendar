@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, Put, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, ValidationPipe } from '@nestjs/common';
 import { WorkplaceService } from './workplace.service';
 import { CreateWorkplaceDto } from './dto/create_workplace.dto';
 import { UpdateWorkplaceDto } from './dto/update_workplace.dto';
@@ -32,5 +32,11 @@ export class WorkplaceController {
   @Put('/updateWorkplace/:userId/:workplaceId')
   updateWorkplace(@Param('userId', ParseIntPipe) userId: number, @Param('workplaceId', ParseIntPipe) workplaceId: number, @Body(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true })) updateWorkplaceDto: UpdateWorkplaceDto) {
     return this.workplaceService.updateWorkplace(updateWorkplaceDto, userId, workplaceId);
+  }
+
+  // バイト先の削除
+  @Delete('/deleteWorkplace/:userId/:workplace_id')
+  deleteWorkplace(@Param('userId', ParseIntPipe) userId: number, @Param('workplace_id', ParseIntPipe) workplace_id: number) {
+    return this.workplaceService.deleteWorkplace(userId, workplace_id);
   }
 }
