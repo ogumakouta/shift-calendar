@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import type { Value } from "react-calendar/dist/cjs/shared/types";
+import LogoutButton from "./LogoutButton";
 
 // 親コンポーネントから受け取るpropsの型定義
 type Props = {
@@ -166,6 +167,9 @@ export default function UserSettingForm({ user_id }: Props) {
           更新
         </button>
       </form>
+      <div>
+        <LogoutButton/>
+      </div>
     </div>
   )
 }
