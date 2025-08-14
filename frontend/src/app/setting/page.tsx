@@ -2,6 +2,7 @@
 
 import UserSettingForm from "../../../components/UserSettingForm";
 import EventLabelSettingForm from "../../../components/EventLabelSettingForm";
+import WorkplaceSettingForm from "../../../components/WorkplaceSettingForm";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 
@@ -25,6 +26,7 @@ export default function SettingPage() {
     <div>
       <UserSettingForm/>
       <EventLabelSettingForm user_id={user_id} />
+      <WorkplaceSettingForm user_id={user_id}/>
     </div>
   );
 }
