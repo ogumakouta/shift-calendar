@@ -3,6 +3,7 @@
 import UserSettingForm from "../../../components/UserSettingForm";
 import EventLabelSettingForm from "../../../components/EventLabelSettingForm";
 import WorkplaceSettingForm from "../../../components/WorkplaceSettingForm";
+import { CalendarPageButton } from "../../../components/CalendarPageButton";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 
@@ -52,8 +53,9 @@ export default function SettingPage() {
   }
 
   return (
-    <div className="flex h-[800px]">
-      <div className="m-4 flex flex-col w-[200px] bg-[#fbfbfb] rounded-md">
+    <div className="flex">
+      <div>
+      <div className="m-4 flex flex-col w-[200px] h-[680px] bg-[#fbfbfb] rounded-md">
         <h1 className="text-2xl text-center m-3">設定</h1>
         <button
         type="button"
@@ -76,6 +78,10 @@ export default function SettingPage() {
         >
           勤務先設定
         </button>
+      </div>
+      <div className="m-4">
+        <CalendarPageButton/>
+      </div>
       </div>
       <div className="w-full flex justify-center">
         {userSetting && <UserSettingForm user_id={user_id} />}
