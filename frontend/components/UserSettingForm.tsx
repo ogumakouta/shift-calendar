@@ -119,7 +119,7 @@ export default function UserSettingForm({ user_id }: Props) {
     }
   }
   return (
-    <div>
+    <div className="w-[410px]">
       <h1 className="text-2xl text-center">ユーザ情報</h1>
       <form 
         onSubmit={handleSubmit} 

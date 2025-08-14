@@ -179,7 +179,7 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
   }
 
   return (
-    <div>
+    <div className="w-[410px]">
       <h1 className="text-2xl text-center">勤務先</h1>
       <div className='flex flex-col gap-4 max-w-md mx-auto my-8 p-8 rounded-lg shadow-md'>
         <div className="text-center text-red-500">
