@@ -18,12 +18,11 @@ type Label = {
 // APIのエンドポイント
 const apiUrl = process.env.NEXT_PUBLIC_API_URL
 
-const getEventLabels = async (user_id) => {
+const getEventLabels = async (user_id: number | string) => {
   if (!user_id) return;
 
   // 予定の種類を取得
   try {
-    console.log('リクエスト送信');
     const labelsRes = await fetch(`${apiUrl}/event-label/getLabels/${user_id}`);
     // レスポンスが正常じゃなかったらエラー
     if (!labelsRes.ok) {
@@ -37,20 +36,15 @@ const getEventLabels = async (user_id) => {
 
 export default function EventLabelSettingForm({ user_id }: Props) {
   const [message, setMessage] = useState('');
-  const [name, setName] = useState('');
   const [newLabelName, setNewLabelName] = useState('');
   const [labels, setLabels] = useState<Label[]>([]);
 
 
   useEffect(() => {
-    const fetchData = async (user_id) => {
+    const fetchData = async (user_id: number | string) => {
       // 予定の種類を取得してlabelsステートにセット
       const labelsRes = await getEventLabels(user_id);
       setLabels(labelsRes || []);
-
-      // 取得したユーザ情報を入力フォームに表示
-      const currentName = labelsRes.name || '';
-      setName(currentName);
     }
 
     // ユーザIDがあるときだけ予定の種類を取得す関数を実行する
@@ -58,8 +52,6 @@ export default function EventLabelSettingForm({ user_id }: Props) {
       fetchData(user_id)
     }
   }, [user_id])
-
-  // console.log(labels);
 
   // map内の各inputを個別に編集するためのハンドラ
   const handleLabelNameChange = (id: number | string, newName: string, newCommon: number | string) => {
