@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SettingPageButton from "../../components/SettingPageButton";
+import Link from "next/link";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,7 +30,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
       <div className="flex p-5 justify-between items-center">
-        <h1 className="header text-5xl mt-5 mb-5">シフトカレンダー</h1>
+        <Link href='/calendar'><h1 className="header text-5xl mt-5 mb-5">シフトカレンダー</h1></Link>
         <nav className="flex items-center">
           <SettingPageButton/>
         </nav>
