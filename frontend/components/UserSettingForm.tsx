@@ -1,14 +1,18 @@
 'use client'
 
 import { useState, useEffect } from "react";
-import { jwtDecode } from "jwt-decode";
+import type { Value } from "react-calendar/dist/cjs/shared/types";
 
+// 親コンポーネントから受け取るpropsの型定義
+type Props = {
+  user_id: Value;
+};
 
 // APIのエンドポイントを.envから読み込む
 const apiUrl = process.env.NEXT_PUBLIC_API_URL
 
 // ユーザIDからユーザ情報を取得する関数
-const getUser = async (user_id) => {
+const getUser = async (user_id: number | string) => {
   const payload = {
     id: user_id
   }
@@ -27,8 +31,7 @@ const getUser = async (user_id) => {
   return res.json();
 }
 
-export default function UserSettingForm() {
-  const [user_id, setUser_id] = useState('');
+export default function UserSettingForm({ user_id }: Props) {
   const [message, setMessage] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -39,17 +42,7 @@ export default function UserSettingForm() {
 
   useEffect(() => {
     const getAndSetUser = async () => {
-      const token = localStorage.getItem('access_token');
-      if (!token) {
-        console.log('ユーザIDが見つかりません')
-        return;
-      }
-  
       try{
-        const decodeToken = jwtDecode(token);
-        const user_id = decodeToken.sub;
-        setUser_id(user_id);
-  
         // ユーザ情報を取得する関数を実行
         const userRes = await getUser(user_id);
 
@@ -68,15 +61,13 @@ export default function UserSettingForm() {
           email: currentEmail,
           birthday: formattedDate,
         });
-
-        
       } catch (error) {
         console.error('処理中にエラーが発生しました：', error);
       }
     }
 
     getAndSetUser();
-  }, [])
+  }, [user_id])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -171,7 +162,6 @@ export default function UserSettingForm() {
         <button 
           type="submit"
           className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
-          // disabled={!isChange}
         >
           更新
         </button>

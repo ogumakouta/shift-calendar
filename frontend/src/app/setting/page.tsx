@@ -19,12 +19,11 @@ export default function SettingPage() {
 
     const decodeToken = jwtDecode(token);
     setUser_id(decodeToken.sub)
-    console.log('ユーザID取得')
   }, [])
 
   return (
     <div>
-      <UserSettingForm/>
+      <UserSettingForm user_id={user_id} />
       <EventLabelSettingForm user_id={user_id} />
       <WorkplaceSettingForm user_id={user_id}/>
     </div>
