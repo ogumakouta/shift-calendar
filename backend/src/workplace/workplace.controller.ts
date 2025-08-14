@@ -7,7 +7,7 @@ import { UpdateWorkplaceDto } from './dto/update_workplace.dto';
 export class WorkplaceController {
   constructor(private readonly workplaceService: WorkplaceService) {}
 
-  // バイト先作成
+  // 勤務先作成
   @Post('create')
   create(
     @Body(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
@@ -16,25 +16,25 @@ export class WorkplaceController {
     return this.workplaceService.create(createWorkplaceDto);
   }
 
-  // バイト先取得
+  // 勤務先取得
   @Get('getWorkplace/:userId')
   getLabels(@Param('userId', ParseIntPipe) userId: number) {
     return this.workplaceService.getWorkplaces(userId);
   }
 
-  // バイト先の時給取得
+  // 勤務先の時給取得
   @Get('getWorkplaceWage/:workplaceId')
   getWorkplaceWage(@Param('workplaceId', ParseIntPipe) workplaceId: number) {
     return this.workplaceService.getWorkplaceWage(workplaceId);
   }
 
-  // バイト先の更新
+  // 勤務先の更新
   @Put('/updateWorkplace/:userId/:workplaceId')
   updateWorkplace(@Param('userId', ParseIntPipe) userId: number, @Param('workplaceId', ParseIntPipe) workplaceId: number, @Body(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true })) updateWorkplaceDto: UpdateWorkplaceDto) {
     return this.workplaceService.updateWorkplace(updateWorkplaceDto, userId, workplaceId);
   }
 
-  // バイト先の削除
+  // 勤務先の削除
   @Delete('/deleteWorkplace/:userId/:workplace_id')
   deleteWorkplace(@Param('userId', ParseIntPipe) userId: number, @Param('workplace_id', ParseIntPipe) workplace_id: number) {
     return this.workplaceService.deleteWorkplace(userId, workplace_id);

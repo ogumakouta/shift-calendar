@@ -7,7 +7,7 @@ import { UpdateWorkplaceDto } from './dto/update_workplace.dto';
 export class WorkplaceService {
   constructor(private prisma: PrismaService) {}
 
-  // バイト先作成
+  // 勤務先作成
   async create(createWorkplaceDto: CreateWorkplaceDto) {
     const { user_id, name, location, closing_day, payment_day, hourly_wage } =
       createWorkplaceDto;
@@ -34,18 +34,18 @@ export class WorkplaceService {
 
       return workplace;
     } catch {
-      throw new InternalServerErrorException('バイト先の登録に失敗しました');
+      throw new InternalServerErrorException('勤務先の登録に失敗しました');
     }
   }
 
-  // バイト先取得
+  // 勤務先取得
   async getWorkplaces(user_id: number) {
     return this.prisma.workplace.findMany({
       where: { user_id: user_id },
     });
   }
 
-  // バイト先の時給取得
+  // 勤務先の時給取得
   async getWorkplaceWage(workplace_id: number) {
     return this.prisma.workplace.findFirst({
       where: {id: workplace_id},
@@ -57,7 +57,7 @@ export class WorkplaceService {
     });
   }
 
-  // バイト先の更新
+  // 勤務先の更新
   async updateWorkplace(updateWorkplaceDto: UpdateWorkplaceDto, userId: number, workplaceId: number) {
     try {
       return this.prisma.workplace.update({
@@ -75,7 +75,7 @@ export class WorkplaceService {
     }
   }
 
-  // バイト先の削除
+  // 勤務先の削除
   async deleteWorkplace(user_id: number, workplace_id: number) {
     return this.prisma.workplace.delete({
       where: {
