@@ -43,7 +43,6 @@ const getWorkplace = async (user_id: number | string) => {
 export default function WorkplaceSettingForm({ user_id }: Props) {
   const [workplaces, setWorkplaces] = useState<Workplace[]>([]);
   const [message, setMessage] = useState('');
-  const [workplaceName, setWorkplaceName] = useState('');
   const [name, setName] = useState('');
 
   useEffect(() => {
@@ -105,7 +104,25 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
 
   // 勤務先の削除
   const handleDel = async (user_id: number | string, workplace_id: number | string) => {
-    
+    // 削除対象のラベルを探す
+    const targetWorkplace = workplaces.find(workplace => workplace.id === workplace_id);
+    if (!targetWorkplace) return;
+
+    // 削除対象のラベルが見つかったら削除リクエストを送信
+    setWorkplaces(prevWorkplaces => prevWorkplaces.filter(workplace => workplace.id !== workplace_id));
+    try {
+      const res = await fetch(`${apiUrl}/workplace/deleteWorkplace/${user_id}/${workplace_id}`, {
+        method: 'DELETE',
+      });
+
+      if (!res) {
+        setMessage('勤務先の削除に失敗しました');
+        throw new Error('勤務先の削除に失敗しました');
+      }
+      setMessage(`${targetWorkplace.name}を削除しました`);
+    } catch (error) {
+      setMessage('勤務先の削除に失敗しました');
+    }
   }
 
   // 勤務先の追加
