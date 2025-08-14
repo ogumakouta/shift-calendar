@@ -44,6 +44,20 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
   const [workplaces, setWorkplaces] = useState<Workplace[]>([]);
   const [message, setMessage] = useState('');
   const [name, setName] = useState('');
+  const [newWorkplaceName, setNweWorkplaceName] = useState('');
+  const [newWorkplaceLocation, setNewWorkplaceLocation] = useState('');
+  const [newWorkplaceClosing_day, setNewWorkplaceClosing_day] = useState('');
+  const [newWorkplacePayment_day, setNewWorkplacePayment_day] = useState('');
+  const [newWorkplaceHourly_wage, setNewWorkplaceHourly_wage] = useState('');
+
+  // 勤務先追加フォームをクリアする関数
+  const clearAddForm = () => {
+    setNweWorkplaceName('');
+    setNewWorkplaceLocation('');
+    setNewWorkplaceClosing_day('');
+    setNewWorkplacePayment_day('');
+    setNewWorkplaceHourly_wage('');
+  }
 
   useEffect(() => {
     const fetchData = async (user_id: number | string) => {
@@ -128,6 +142,40 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
   // 勤務先の追加
   const handleAdd = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // 全ての項目が埋まってなかったら処理を中断
+    if (!newWorkplaceName.trim() || !newWorkplaceLocation.trim() || !newWorkplaceClosing_day.trim() || !newWorkplacePayment_day.trim() || !newWorkplaceHourly_wage.trim()) return;
+
+    // 同じ勤務先名があれが処理を中断
+    const targetWorkplace = workplaces.find(workplace => workplace.name === newWorkplaceName);
+    if (targetWorkplace) {
+      setMessage(`${newWorkplaceName}は既に存在しています`)
+      return;
+    }
+
+    // 追加リクエスト送信
+    try {
+      const res = await fetch(`${apiUrl}/workplace/create`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          user_id: user_id,
+          name: newWorkplaceName,
+          location: newWorkplaceLocation,
+          closing_day: parseInt(String(newWorkplaceClosing_day), 10),
+          payment_day: parseInt(String(newWorkplacePayment_day), 10),
+          hourly_wage: parseInt(String(newWorkplaceHourly_wage), 10),
+        }),
+      });
+
+      if (!res.ok) throw new Error('追加に失敗しました');
+      const createdWorkplace = await res.json();
+
+      // stateを更新して画面に反映
+      setWorkplaces(prevWorkplaces => [...prevWorkplaces, createdWorkplace]);
+      clearAddForm(); // 入力欄をクリア
+      setMessage(`「${newWorkplaceName}」を追加しました。`);
+    } catch(err) { console.error(err); }
   }
 
   return (
@@ -204,6 +252,63 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
         ) : (
           <div className="mt-4 text-gray-500">勤務先が登録されていません</div>
         )}
+        <div className="relative flex items-center pt-5">
+          <div className="flex-grow border-t border-gray-400"></div>
+          <span className="flex-shrink mx-4 text-black-500">
+            勤務先の追加
+          </span>
+          <div className="flex-grow border-t border-gray-400"></div>
+        </div>
+        <form onSubmit={handleAdd}>
+          <div className="p-2 text-left flex flex-col">
+            <label htmlFor={'new-name'} className="font-semibold mt-3">勤務先名:</label>
+            <input
+              type="text"
+              id={'new-name'}
+              value={newWorkplaceName}
+              onChange={(e) => setNweWorkplaceName(e.target.value)}
+              className="p-2 border rounded-md"
+            />
+            <label htmlFor={'new-location'} className="font-semibold mt-3">勤務先住所:</label>
+            <input
+              type="text"
+              id={'new-location'}
+              value={newWorkplaceLocation}
+              onChange={(e) => setNewWorkplaceLocation(e.target.value)}
+              className="p-2 border rounded-md"
+            />
+            <label htmlFor={'new-closing_day'} className="font-semibold mt-3">締め日:</label>
+            <input
+              type="number"
+              id={'new-closing_day'}
+              value={newWorkplaceClosing_day}
+              onChange={(e) => setNewWorkplaceClosing_day(e.target.value)}
+              className="p-2 border rounded-md"
+            />
+            <label htmlFor={'new-payment_day'} className="font-semibold mt-3">給料日:</label>
+            <input
+              type="number"
+              id={'new-payment_day'}
+              value={newWorkplacePayment_day}
+              onChange={(e) => setNewWorkplacePayment_day(e.target.value)}
+              className="p-2 border rounded-md"
+            />
+            <label htmlFor={'new-hourly_wage'} className="font-semibold mt-3">時給:</label>
+            <input
+              type="number"
+              id={'new-hourly_wage'}
+              value={newWorkplaceHourly_wage}
+              onChange={(e) => setNewWorkplaceHourly_wage(e.target.value)}
+              className="p-2 border rounded-md"
+            />
+            <button 
+              type="submit"
+              className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors w-full mt-4"
+            >
+              追加
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
