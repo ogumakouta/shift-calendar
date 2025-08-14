@@ -137,6 +137,7 @@ export default function EventLabelSettingForm({ user_id }: Props) {
     const targetLabel = labels.find(label => label.name === newLabelName);
     if (targetLabel) {
       setMessage(`${newLabelName}は既に存在しています`)
+      setNewLabelName('');
       return;
     }
 
@@ -198,6 +199,14 @@ export default function EventLabelSettingForm({ user_id }: Props) {
         ) : (
           <div className="mt-4 text-gray-500">予定の種類は登録されていません。</div>
         )}
+
+        <div className="relative flex items-center pt-5">
+          <div className="flex-grow border-t border-gray-400"></div>
+          <span className="flex-shrink mx-4 text-black-500">
+            予定の種類の追加
+          </span>
+          <div className="flex-grow border-t border-gray-400"></div>
+        </div>
 
         <form onSubmit={handleAdd}>
           <div className="flex flex-col gap-2 mt-7">
