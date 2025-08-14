@@ -6,18 +6,20 @@ import WorkplaceSettingForm from "../../../components/WorkplaceSettingForm";
 import { CalendarPageButton } from "../../../components/CalendarPageButton";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
+import { useRouter } from 'next/navigation';
 
 export default function SettingPage() {
   const [user_id, setUser_id] = useState('');
   const [userSetting, setUserSetting] = useState(true);
   const [eventLabelSetting, setEventLabelSetting] = useState(false);
   const [workplaceSetting, setWorkplaceSetting] = useState(false);
+  const router = useRouter();
 
   // ユーザIDを取得
   useEffect(() => {
     const token = localStorage.getItem('access_token');
     if (!token) {
-      console.log('ユーザIDが見つかりません')
+      router.push('login');
       return;
     }
 
