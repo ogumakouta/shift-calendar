@@ -1,6 +1,7 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateWorkplaceDto } from './dto/create_workplace.dto';
+import { UpdateWorkplaceDto } from './dto/update_workplace.dto';
 
 @Injectable()
 export class WorkplaceService {
@@ -54,5 +55,23 @@ export class WorkplaceService {
         hourly_wage: true,
       }
     });
+  }
+
+  // バイト先の更新
+  async updateWorkplace(updateWorkplaceDto: UpdateWorkplaceDto, userId: number, workplaceId: number) {
+    try {
+      return this.prisma.workplace.update({
+        where: {
+          id: workplaceId,
+          user_id: userId,
+        },
+        data: updateWorkplaceDto,
+      });
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException(`ID：${workplaceId}の勤務先は見つかりません`);
+      }
+      throw error;
+    }
   }
 }

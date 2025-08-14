@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Post, Put, ValidationPipe } from '@nestjs/common';
 import { WorkplaceService } from './workplace.service';
 import { CreateWorkplaceDto } from './dto/create_workplace.dto';
+import { UpdateWorkplaceDto } from './dto/update_workplace.dto';
 
 @Controller('workplace')
 export class WorkplaceController {
@@ -25,5 +26,11 @@ export class WorkplaceController {
   @Get('getWorkplaceWage/:workplaceId')
   getWorkplaceWage(@Param('workplaceId', ParseIntPipe) workplaceId: number) {
     return this.workplaceService.getWorkplaceWage(workplaceId);
+  }
+
+  // バイト先の更新
+  @Put('/updateWorkplace/:userId/:workplaceId')
+  updateWorkplace(@Param('userId', ParseIntPipe) userId: number, @Param('workplaceId', ParseIntPipe) workplaceId: number, @Body(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true })) updateWorkplaceDto: UpdateWorkplaceDto) {
+    return this.workplaceService.updateWorkplace(updateWorkplaceDto, userId, workplaceId);
   }
 }
