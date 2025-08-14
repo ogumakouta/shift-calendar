@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 export default function SettingPageButton() {
   const pathname = usePathname();
 
-  if (pathname !== '/setting') {
+  if (pathname === '/calendar') {
     return <Link href='/setting' className='m-2'><Image src={settingBtn} alt='設定' height={48}/></Link>
   }
 
