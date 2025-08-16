@@ -15,7 +15,6 @@ type Props = {
 export default function EventListArea({ date, events, onEventCreated }: Props) {
   // カレンダーで選択した日付を格納
   const selectDate = date instanceof Date ? date.toLocaleDateString("ja-JP") : "日付が選択されていません";
-  console.log('選択された日付：',selectDate);
 
 
   // ISO8601形式の時間から⚪︎時⚪︎分を取得する関数

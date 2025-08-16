@@ -6,7 +6,7 @@ import { jwtDecode } from "jwt-decode";
 export default function CreateEvent({ onEventCreated }) {
   const [eventType, setEventType] = useState('');
   const [user_id, setUser_id] = useState('');
-  const [label_id, setLabel_id] = useState('');
+  // const [label_id, setLabel_id] = useState('');
   const [title, setTitle] = useState('');
   const [selectedWorkplace, setSelectedWorkplace] = useState('');
   const [workplace, setWorkplace] = useState([]);
@@ -137,11 +137,8 @@ export default function CreateEvent({ onEventCreated }) {
     }
     // 予定の種類のIDを取得
     const selectLabel = labels.find(label => label.name === eventType);
-    if (selectLabel){
-      setLabel_id(selectLabel.id);
-    } else {
-      setLabel_id('');
-    }
+      // setLabel_id(selectLabel.id);
+      const label_id = selectLabel ? selectLabel.id : null;
 
     const payload = {
       user_id: user_id,
