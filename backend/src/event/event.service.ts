@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { EventDto } from './dto/event.dto';
 @Injectable()
@@ -56,37 +56,51 @@ export class EventService {
 
   // ユーザIDごとの予定の取得
   async getEvents(user_id: number) {
-    return this.prisma.event.findMany({
-      where: {
-        user_id: user_id
-      },
-      select: {
-        id: true,
-        // event_label_id: true,
-        title: true,
-        is_allday: true,
-        start_time: true,
-        finish_time: true,
-        break_minutes: true,
-        location: true,
-        memo: true,
-        workplace: {
-          select: {
-            id: true,
-            name: true,
+    try {
+      return this.prisma.event.findMany({
+        where: {
+          user_id: user_id
+        },
+        select: {
+          id: true,
+          // event_label_id: true,
+          title: true,
+          is_allday: true,
+          start_time: true,
+          finish_time: true,
+          break_minutes: true,
+          location: true,
+          memo: true,
+          workplace: {
+            select: {
+              id: true,
+              name: true,
+            },
           },
         },
-      },
-    });
+      });
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException(`ユーザID：${user_id}の予定が見つかりません`);
+      }
+      throw error;
+    }
   }
 
   // 予定を削除
   async deleteEvent(user_id: number, id: number) {
-    return this.prisma.event.delete({
-      where: {
-        id: id,
-        user_id: user_id,
-      },
-    });
+    try {
+      return this.prisma.event.delete({
+        where: {
+          id: id,
+          user_id: user_id,
+        },
+      });
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException(`予定ID：${id}の予定が見つかりません`);
+      }
+      throw error;
+    }
   }
 }
