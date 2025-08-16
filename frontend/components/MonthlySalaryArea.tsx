@@ -24,12 +24,17 @@ async function getHourlyWage(workplace_id) {
 }
 
 // 勤務時間を計算する関数
-function calculateWorkHours(start_time, finish_time) {
+function calculateWorkHours(start_time, finish_time, break_minutes) {
+  // Date型に変換した差分を求めて勤務時間を出す
   const start = new Date(start_time);
   const finish = new Date(finish_time);
   const diffMilliseconds = finish - start;
-  // ミリ秒を時間単位に変換
-  return diffMilliseconds / (1000 * 60 * 60);
+
+  // ミリ秒を分単位に変換して休憩時間を引く
+  const aa = (diffMilliseconds / (1000 * 60)) - break_minutes;
+
+  // 休憩時間を引いた分単位の勤務時間を時間単位に変換して変えす
+  return aa / 60;
 }
 
 
@@ -74,7 +79,7 @@ export default function MonthlySalaryArea({ date, events }: Props) {
           }
 
           const hourlyWage = await getHourlyWage(event.workplace.id);
-          const workHours = calculateWorkHours(event.start_time, event.finish_time);
+          const workHours = calculateWorkHours(event.start_time, event.finish_time, event.break_minutes ?? 0);
           const calculatedSalary = hourlyWage * workHours;
 
           return calculatedSalary;
