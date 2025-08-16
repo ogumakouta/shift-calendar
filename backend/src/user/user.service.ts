@@ -52,9 +52,16 @@ export class UserService {
 
   // ログイン
   async findOneByEmail(email: string) {
-    return this.prisma.user.findUnique({
-      where: { email },
-    });
+    try {
+      return this.prisma.user.findUnique({
+        where: { email },
+      });
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException('ユーザが見つかりません');
+      }
+      throw error;
+    }
   }
 
   // ユーザ情報を取得

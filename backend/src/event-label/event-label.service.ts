@@ -9,14 +9,21 @@ export class EventLavelService {
 
   // 予定のラベルの取得
   async getLabels(user_id: number) {
-    return this.prisma.eventLabel.findMany({
-      where: {
-        OR: [
-          { user_id: user_id },
-          { common: true },
-        ],
-      },
-    });
+    try {
+      return this.prisma.eventLabel.findMany({
+        where: {
+          OR: [
+            { user_id: user_id },
+            { common: true },
+          ],
+        },
+      });
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException(`ユーザID：${user_id}の予定ラベルが見つかりません`);
+      }
+      throw error;
+    }
   }
 
   // 予定のラベルの更新
@@ -31,7 +38,7 @@ export class EventLavelService {
       });
     } catch (error) {
       if (error.code === 'P2025') {
-        throw new NotFoundException(`ID：${labelId}の種類は見つかりません`);
+        throw new NotFoundException(`ラベルID：${labelId}の種類は見つかりません`);
       }
       throw error;
     }
@@ -39,12 +46,19 @@ export class EventLavelService {
 
   // 予定ラベルの削除
   async deleteEventLabel(user_id: number, label_id: number) {
-    return this.prisma.eventLabel.delete({
-      where: {
-        id: label_id,
-        user_id: user_id,
-      },
-    });
+    try {
+      return this.prisma.eventLabel.delete({
+        where: {
+          id: label_id,
+          user_id: user_id,
+        },
+      });
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException(`ID：${label_id}の予定ラベルが見つかりません`);
+      }
+      throw error;
+    }
   }
 
   // 予定ラベルの追加

@@ -29,7 +29,7 @@ export default function LoginForm() {
       // ログインレスポンスが正常じゃない場合
       if (!res.ok) {
         const errorData = await res.json();
-        throw new Error(errorData.message || 'ログインに失敗しました');
+        throw new Error(errorData.message || 'メールアドレスまたはパスワードが異なっています');
       }
 
       // 成功したらアクセストークンをlocalStorageに保存してカレンダーページに移動
@@ -40,7 +40,7 @@ export default function LoginForm() {
         router.push('/calendar');
       }
     } catch (error: any) {
-      setError('ログインに失敗しました');
+      setError('メールアドレスまたはパスワードが異なっています');
     }
   };
 
