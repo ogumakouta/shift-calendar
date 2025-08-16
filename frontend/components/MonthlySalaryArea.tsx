@@ -31,10 +31,10 @@ function calculateWorkHours(start_time, finish_time, break_minutes) {
   const diffMilliseconds = finish - start;
 
   // ミリ秒を分単位に変換して休憩時間を引く
-  const aa = (diffMilliseconds / (1000 * 60)) - break_minutes;
+  const minutes_worktime = (diffMilliseconds / (1000 * 60)) - break_minutes;
 
-  // 休憩時間を引いた分単位の勤務時間を時間単位に変換して変えす
-  return aa / 60;
+  // 休憩時間を引いた分単位の勤務時間を時間単位に変換して返す
+  return minutes_worktime / 60;
 }
 
 
@@ -43,6 +43,8 @@ export default function MonthlySalaryArea({ date, events }: Props) {
   const selectDate =new Date(date);
   // 月の総給料を保持するstate
   const [monthlySalary, setMonthlySalary] = useState(0);
+  // 月の総勤務時間を保持するstate
+  const [monthlyWorkTime, setMonthlyWorkTime] = useState(0);
   // 計算中かどうかの状態を保持するstate
   const [isLoading, setIsLoading] = useState(false);
 
@@ -52,6 +54,7 @@ export default function MonthlySalaryArea({ date, events }: Props) {
     // dateが有効なDateオブジェクトでなければ何もしない
     if (!(date instanceof Date)) {
       setMonthlySalary(0); // 給料をリセット
+      setMonthlyWorkTime(0);// 総勤務時間をリセット
       return;
     }
 
@@ -67,6 +70,7 @@ export default function MonthlySalaryArea({ date, events }: Props) {
 
       if (filteredEvents.length === 0) {
         setMonthlySalary(0);
+        setMonthlyWorkTime(0);
         setIsLoading(false);
         return;
       }
@@ -75,26 +79,40 @@ export default function MonthlySalaryArea({ date, events }: Props) {
         // 2. 各イベントの給料計算プロミスを作成
         const salaryPromises = filteredEvents.map(async (event) => {
           if (!event || !event.workplace?.id) {
-            return 0;
+            return { salary: 0, hours: 0 };
           }
 
           const hourlyWage = await getHourlyWage(event.workplace.id);
           const workHours = calculateWorkHours(event.start_time, event.finish_time, event.break_minutes ?? 0);
           const calculatedSalary = hourlyWage * workHours;
 
-          return calculatedSalary;
+          return { salary: calculatedSalary, hours: workHours };
         });
 
         // 3. 全てのプロミスを並行して実行し、結果（給料の配列）を待つ
-        const salaries = await Promise.all(salaryPromises);
+        const results = await Promise.all(salaryPromises);
 
         // 4. 給料の配列を合計する
-        const totalSalary = salaries.reduce((total, current) => total + current, 0);
+        const totals = results.reduce((acc, current) => {
+          acc.totalSalary += current.salary;
+          acc.totalHours += current.hours;
+          return acc;
+        }, { totalSalary: 0, totalHours: 0 });
 
+        // 総勤務時間の小数点以下を割合から分に変換
+        const minutes = Number((totals.totalHours % 1).toPrecision(2));
+        const newMinutes = 60 * minutes;
+        
+        // 分に変換したものを総勤務時間の時間部分に分部分を足す
+        const newMonthryWorkTime = Math.trunc(totals.totalHours) + (newMinutes / 100);
+        
         // 5. stateを更新
-        setMonthlySalary(totalSalary);
+        setMonthlySalary(totals.totalSalary);
+        setMonthlyWorkTime(newMonthryWorkTime);
       } catch (error) {
-        setMonthlySalary(0); // エラー時は0にリセット
+        // エラー時は0にリセット
+        setMonthlySalary(0);
+        setMonthlyWorkTime(0);
       } finally {
         setIsLoading(false);
       }
@@ -113,8 +131,10 @@ export default function MonthlySalaryArea({ date, events }: Props) {
           {isLoading ? (
             <span>計算中...</span>
           ) : (
-            // toLocaleString()で3桁区切りの通貨形式にする
-            <span className='text-4xl'>¥{Math.floor(monthlySalary).toLocaleString()}</span>
+            <div>
+              <div className='text-4xl'>¥{Math.floor(monthlySalary).toLocaleString()}</div>
+              <div className='text-xl mt-3'>勤務時間：{Math.trunc(monthlyWorkTime)}時間{Number((monthlyWorkTime % 1) * 100).toPrecision(2)}分</div>
+            </div>
           )}
         </div>
       </div>
