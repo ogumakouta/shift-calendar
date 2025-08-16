@@ -40,36 +40,50 @@ export class WorkplaceService {
 
   // 勤務先取得
   async getWorkplaces(user_id: number) {
-    return this.prisma.workplace.findMany({
-      where: { user_id: user_id },
-    });
+    try {
+      return this.prisma.workplace.findMany({
+        where: { user_id: user_id },
+      });
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException(`ユーザID：${user_id}の勤務先は見つかりません`);
+      }
+      throw error;
+    }
   }
 
   // 勤務先の時給取得
   async getWorkplaceWage(workplace_id: number) {
-    return this.prisma.workplace.findFirst({
-      where: {id: workplace_id},
-      select: {
-        id: true,
-        name: true,
-        hourly_wage: true,
+    try {
+      return this.prisma.workplace.findFirst({
+        where: {id: workplace_id},
+        select: {
+          id: true,
+          name: true,
+          hourly_wage: true,
+        }
+      });
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException(`勤務先ID：${workplace_id}の時給が見つかりません`);
       }
-    });
+      throw error;
+    }
   }
 
   // 勤務先の更新
-  async updateWorkplace(updateWorkplaceDto: UpdateWorkplaceDto, userId: number, workplaceId: number) {
+  async updateWorkplace(updateWorkplaceDto: UpdateWorkplaceDto, userId: number, workplace_id: number) {
     try {
       return this.prisma.workplace.update({
         where: {
-          id: workplaceId,
+          id: workplace_id,
           user_id: userId,
         },
         data: updateWorkplaceDto,
       });
     } catch (error) {
       if (error.code === 'P2025') {
-        throw new NotFoundException(`ID：${workplaceId}の勤務先は見つかりません`);
+        throw new NotFoundException(`勤務先ID：${workplace_id}の勤務先は見つかりません`);
       }
       throw error;
     }
@@ -77,11 +91,18 @@ export class WorkplaceService {
 
   // 勤務先の削除
   async deleteWorkplace(user_id: number, workplace_id: number) {
-    return this.prisma.workplace.delete({
-      where: {
-        id: workplace_id,
-        user_id: user_id,
-      },
-    });
+    try {
+      return this.prisma.workplace.delete({
+        where: {
+          id: workplace_id,
+          user_id: user_id,
+        },
+      });
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException(`勤務先ID：${workplace_id}が見つかりません`);
+      }
+      throw error;
+    }
   }
 }
