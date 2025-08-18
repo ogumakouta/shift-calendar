@@ -212,21 +212,33 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
                     className="p-2 border rounded-md"
                   />
                   <label htmlFor={`closing_day-${workplace.id}`} className="font-semibold mt-3">締め日:</label>
-                  <input
-                    type="number"
+                  <select
                     id={`closing_day-${workplace.id}`}
                     value={workplace.closing_day}
                     onChange={(e) => handleWorkplaceNameChange(workplace.id, workplace.name, workplace.location, e.target.value, workplace.payment_day, workplace.hourly_wage)}
                     className="p-2 border rounded-md"
-                  />
+                  >
+                    {Array.from({ length: 30 }, (_, i) => i + 1).map(day => (
+                      <option key={day} value={day}>
+                        {day}日
+                      </option>
+                    ))}
+                    <option value="99">月末</option>
+                  </select>
                   <label htmlFor={`payment_day-${workplace.id}`} className="font-semibold mt-3">給料日:</label>
-                  <input
-                    type="number"
+                  <select
                     id={`payment_day-${workplace.id}`}
                     value={workplace.payment_day}
                     onChange={(e) => handleWorkplaceNameChange(workplace.id, workplace.name, workplace.location, workplace.closing_day, e.target.value, workplace.hourly_wage)}
                     className="p-2 border rounded-md"
-                  />
+                  >
+                    {Array.from({ length: 30 }, (_, i) => i + 1).map(day => (
+                      <option key={day} value={day}>
+                        {day}日
+                      </option>
+                    ))}
+                    <option value="99">月末</option>
+                  </select>
                   <label htmlFor={`hourly_wage-${workplace.id}`} className="font-semibold mt-3">時給:</label>
                   <input
                     type="number"
