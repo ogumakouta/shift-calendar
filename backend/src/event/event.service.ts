@@ -75,6 +75,7 @@ export class EventService {
             select: {
               id: true,
               name: true,
+              closing_day: true,
             },
           },
         },
