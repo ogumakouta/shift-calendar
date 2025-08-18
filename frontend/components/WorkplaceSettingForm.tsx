@@ -49,6 +49,7 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
   const [newWorkplaceClosing_day, setNewWorkplaceClosing_day] = useState('');
   const [newWorkplacePayment_day, setNewWorkplacePayment_day] = useState('');
   const [newWorkplaceHourly_wage, setNewWorkplaceHourly_wage] = useState('');
+  const [newPlaceMassage, setNewPlaceMessage] = useState('');
 
   // 勤務先追加フォームをクリアする関数
   const clearAddForm = () => {
@@ -144,14 +145,17 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
     e.preventDefault();
 
     // 全ての項目が埋まってなかったら処理を中断
-    if (!newWorkplaceName.trim() || !newWorkplaceLocation.trim() || !newWorkplaceClosing_day.trim() || !newWorkplacePayment_day.trim() || !newWorkplaceHourly_wage.trim()) return;
-
+    if (!newWorkplaceName.trim() || !newWorkplaceLocation.trim() || !newWorkplaceClosing_day.trim() || !newWorkplacePayment_day.trim() || !newWorkplaceHourly_wage.trim()) {
+      setNewPlaceMessage('全ての項目を入力してください');
+    }
     // 同じ勤務先名があれが処理を中断
     const targetWorkplace = workplaces.find(workplace => workplace.name === newWorkplaceName);
     if (targetWorkplace) {
       setMessage(`${newWorkplaceName}は既に存在しています`)
       return;
     }
+
+    setNewPlaceMessage('');
 
     // 追加リクエスト送信
     try {
@@ -208,21 +212,33 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
                     className="p-2 border rounded-md"
                   />
                   <label htmlFor={`closing_day-${workplace.id}`} className="font-semibold mt-3">締め日:</label>
-                  <input
-                    type="number"
+                  <select
                     id={`closing_day-${workplace.id}`}
                     value={workplace.closing_day}
                     onChange={(e) => handleWorkplaceNameChange(workplace.id, workplace.name, workplace.location, e.target.value, workplace.payment_day, workplace.hourly_wage)}
                     className="p-2 border rounded-md"
-                  />
+                  >
+                    {Array.from({ length: 30 }, (_, i) => i + 1).map(day => (
+                      <option key={day} value={day}>
+                        {day}日
+                      </option>
+                    ))}
+                    <option value="99">月末</option>
+                  </select>
                   <label htmlFor={`payment_day-${workplace.id}`} className="font-semibold mt-3">給料日:</label>
-                  <input
-                    type="number"
+                  <select
                     id={`payment_day-${workplace.id}`}
                     value={workplace.payment_day}
                     onChange={(e) => handleWorkplaceNameChange(workplace.id, workplace.name, workplace.location, workplace.closing_day, e.target.value, workplace.hourly_wage)}
                     className="p-2 border rounded-md"
-                  />
+                  >
+                    {Array.from({ length: 30 }, (_, i) => i + 1).map(day => (
+                      <option key={day} value={day}>
+                        {day}日
+                      </option>
+                    ))}
+                    <option value="99">月末</option>
+                  </select>
                   <label htmlFor={`hourly_wage-${workplace.id}`} className="font-semibold mt-3">時給:</label>
                   <input
                     type="number"
@@ -261,6 +277,9 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
         </div>
         <form onSubmit={handleAdd}>
           <div className="p-2 text-left flex flex-col">
+            <div className="text-center text-red-500">
+              {newPlaceMassage}
+            </div>
             <label htmlFor={'new-name'} className="font-semibold mt-3">勤務先名:</label>
             <input
               type="text"
@@ -278,21 +297,35 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
               className="p-2 border rounded-md"
             />
             <label htmlFor={'new-closing_day'} className="font-semibold mt-3">締め日:</label>
-            <input
-              type="number"
+            <select
               id={'new-closing_day'}
               value={newWorkplaceClosing_day}
               onChange={(e) => setNewWorkplaceClosing_day(e.target.value)}
               className="p-2 border rounded-md"
-            />
+            >
+              <option></option>
+              {Array.from({ length: 30 }, (_, i) => i + 1).map(day => (
+                <option key={day} value={day}>
+                  {day}日
+                </option>
+              ))}
+              <option value="99">月末</option>
+            </select>
             <label htmlFor={'new-payment_day'} className="font-semibold mt-3">給料日:</label>
-            <input
-              type="number"
+            <select
               id={'new-payment_day'}
               value={newWorkplacePayment_day}
               onChange={(e) => setNewWorkplacePayment_day(e.target.value)}
               className="p-2 border rounded-md"
-            />
+            >
+              <option></option>
+              {Array.from({ length: 30 }, (_, i) => i + 1).map(day => (
+                <option key={day} value={day}>
+                  {day}日
+                </option>
+              ))}
+              <option value="99">月末</option>
+            </select>
             <label htmlFor={'new-hourly_wage'} className="font-semibold mt-3">時給:</label>
             <input
               type="number"
