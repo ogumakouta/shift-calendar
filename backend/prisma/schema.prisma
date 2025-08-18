@@ -13,6 +13,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Payment_month {
+  current
+  next
+  after_next
+}
+
 // ユーザーモデル
 model User {
   id            Int          @id @default(autoincrement())
@@ -30,17 +36,18 @@ model User {
 }
 
 model Workplace {
-  id           Int      @id @default(autoincrement())
-  user_id      Int
-  name         String
-  location     String?  @db.Text
-  closing_day  Int
-  payment_day  Int
-  hourly_wage  Int
-  created_at   DateTime @default(now())
-  updated_at   DateTime @updatedAt
-  user         User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  events       Event[]
+  id            Int           @id @default(autoincrement())
+  user_id       Int
+  name          String
+  location      String?       @db.Text
+  closing_day   Int
+  payment_month Payment_month @default(current)
+  payment_day   Int
+  hourly_wage   Int
+  created_at    DateTime      @default(now())
+  updated_at    DateTime      @updatedAt
+  user          User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  events        Event[]
 
   @@map("workplaces")
 }
