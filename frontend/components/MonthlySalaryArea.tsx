@@ -61,11 +61,39 @@ export default function MonthlySalaryArea({ date, events }: Props) {
     const calculateSalary = async () => {
       setIsLoading(true);
 
-      // 1. 選択された月のイベントをフィルタリング
+      // 選択された年月を取得
+      const selectedYear = date.getFullYear();
+      const selectedMonth = date.getMonth();
+
+      // 予定をフィルタリングする関数
       const filteredEvents = events.filter(event => {
-        if (!event.start_time) return false;
+        // 必要な情報がなければ計算対象外
+        if (!event.start_time) {
+          return false;
+        }
+
+        // 予定の開始時間を取得
         const eventDate = new Date(event.start_time);
-        return date.getFullYear() === eventDate.getFullYear() && date.getMonth() === eventDate.getMonth();
+        // 締め日を取得
+        const closingDay = event.workplace.closing_day;
+
+        let startDate, endDate;
+        
+        // 選択された月の最終日を取得
+        const lastDayOfSelectedMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+
+        // 締め日が月末か判定
+        if (closingDay === 99) {
+          // 月末締め
+          startDate = new Date(selectedYear, selectedMonth, 1);
+          endDate = new Date(selectedYear, selectedMonth, lastDayOfSelectedMonth, 23, 59, 59);
+        } else {
+          // 月途中締め
+          startDate = new Date(selectedYear, selectedMonth - 1, closingDay + 1);
+          endDate = new Date(selectedYear, selectedMonth, closingDay, 23, 59, 59);
+        }
+        
+        return eventDate >= startDate && eventDate <= endDate;
       });
 
       if (filteredEvents.length === 0) {
