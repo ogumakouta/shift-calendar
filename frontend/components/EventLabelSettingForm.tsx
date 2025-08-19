@@ -98,12 +98,6 @@ export default function EventLabelSettingForm({ user_id }: Props) {
     const targetLabel = labels.find(label => label.id === label_id);
     if (!targetLabel) return;
 
-    // 対象ラベルが「バイト」か「予定」だったら処理を中断
-    if (targetLabel.name === "予定" || targetLabel.name === "バイト") {
-      setMessage('「バイト」と「予定」は削除できません');
-      return;
-    }
-
     // 削除対象のラベルが見つかったら削除リクエストを送信
     setLabels(prevLabels => prevLabels.filter(label => label.id !== label_id));
     try {
@@ -167,21 +161,24 @@ export default function EventLabelSettingForm({ user_id }: Props) {
                   id={`name-${label.id}`}
                   value={label.name}
                   onChange={(e) => handleLabelNameChange(label.id, e.target.value, label.common)}
-                  className="p-2 border rounded-md"
+                  className="p-2 border rounded-md disabled:bg-gray-200 disabled:opacity-70 disabled:cursor-not-allowed"
+                  disabled={label.name === '予定' || label.name === 'バイト'}
                 />
               </div>
               <div className="flex items-end">
               <button 
                 type="button"
                 onClick={() => handleUpdate(user_id, label.id)}
-                className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors w-[70px] h-[50px]  ml-3 mr-3"
+                className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors w-[70px] h-[50px]  ml-3 mr-3 disabled:bg-gray-400 disabled:opacity-70 disabled:cursor-not-allowed"
+                disabled={label.name === '予定' || label.name === 'バイト'}
               >
                 更新
               </button>
               <button 
                 type="button"
                 onClick={() => handleDel(user_id, label.id)}
-                className="p-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors w-[70px] h-[50px]"
+                className="p-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors w-[70px] h-[50px] disabled:bg-gray-400 disabled:opacity-70 disabled:cursor-not-allowed"
+                disabled={label.name === '予定' || label.name === 'バイト'}
               >
                 削除
               </button>
