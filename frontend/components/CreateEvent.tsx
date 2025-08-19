@@ -173,6 +173,17 @@ export default function CreateEvent({ onEventCreated, date }: Props) {
     }
   };
 
+  // 予定の種類がバイト先だったらタイトルにバイト先名を入れる
+  useEffect(() => {
+    if (eventType === 'バイト' && selectedWorkplace) {
+      const findWorkplace = workplace.find((wp) => wp.id === parseInt(selectedWorkplace, 10))
+      console.log(findWorkplace);
+      if (findWorkplace) {
+        setTitle(findWorkplace.name)
+      }
+    }
+  }, [eventType, selectedWorkplace])
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setMessage('');
