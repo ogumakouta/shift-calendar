@@ -55,7 +55,10 @@ export default function CreateEvent({ onEventCreated, date }: Props) {
     }
   }, []);
 
+  // APIのエンドポイントを取得
   const apiUrl = process.env.NEXT_PUBLIC_API_URL
+
+  // 予定の種類と勤務先を取得する
   useEffect (() => {
     const fetchData = async () => {
       if (!user_id) return;
@@ -95,25 +98,44 @@ export default function CreateEvent({ onEventCreated, date }: Props) {
     // dateが有効なDateオブジェクトでない場合は処理を中断
     if (!date || !(date instanceof Date)) return;
 
+    // 現在の時間を取得
     const nowHour = new Date(Date.now()).getHours();
-
+    
+    // 選択された年月日を取得
     const selectedYear = date.getFullYear();
     const selectedMonth = String(date.getMonth() + 1).padStart(2, '0');
     const selectedDate = String(date.getDate()).padStart(2, '0');
+    
+    if (isAllday) {
+      // 入力されている予定が終日だった時
+      const formatStartDate = `${selectedYear}-${selectedMonth}-${selectedDate}T00:00`;
+      const formatFinishDate = `${selectedYear}-${selectedMonth}-${selectedDate}T23:59`;
 
-    const formatStartDate = `${selectedYear}-${selectedMonth}-${selectedDate}T${String((nowHour + 1) % 24).padStart(2, '0')}:00`;
-    const formatFinishDate = `${selectedYear}-${selectedMonth}-${selectedDate}T${String((nowHour + 2) % 24).padStart(2, '0')}:00`;
+      setStartTime(formatStartDate);
+      setFinishTime(formatFinishDate);
 
-    setStartTime(formatStartDate);
-    setFinishTime(formatFinishDate);
+      if (formatStartDate) {
+        setISOStartTime(new Date(formatStartDate).toISOString());
+      }
+      if (formatFinishDate) {
+        setISOFinishTime(new Date(formatFinishDate).toISOString());
+      }
+    } else {
+      // 入力されている予定が終日じゃなかった時
+      const formatStartDate = `${selectedYear}-${selectedMonth}-${selectedDate}T${String((nowHour + 1) % 24).padStart(2, '0')}:00`;
+      const formatFinishDate = `${selectedYear}-${selectedMonth}-${selectedDate}T${String((nowHour + 2) % 24).padStart(2, '0')}:00`;
 
-    if (formatStartDate) {
-      setISOStartTime(new Date(formatStartDate).toISOString());
+      setStartTime(formatStartDate);
+      setFinishTime(formatFinishDate);
+
+      if (formatStartDate) {
+        setISOStartTime(new Date(formatStartDate).toISOString());
+      }
+      if (formatFinishDate) {
+        setISOFinishTime(new Date(formatFinishDate).toISOString());
+      }
     }
-    if (formatFinishDate) {
-      setISOFinishTime(new Date(formatFinishDate).toISOString());
-    }
-  }, [date])
+  }, [date, isAllday])
 
   // 開始時間をISO8601の形式に変換
   const handleStart_timeChange = (e) => {
@@ -122,10 +144,10 @@ export default function CreateEvent({ onEventCreated, date }: Props) {
 
     // inputが空でない場合のみ変換を実行
     if (inputValue) {
-      // 1. inputの値を元にDateオブジェクトを生成 (ブラウザのローカルタイムゾーンで解釈)
+      // inputの値を元にDateオブジェクトを生成
       const localDate = new Date(inputValue);
 
-      // 2. toISOString()でUTCのISO 8601形式に変換
+      // toISOString()でUTCのISO 8601形式に変換
       const iso = localDate.toISOString();
       setISOStartTime(iso);
     } else {
@@ -140,10 +162,10 @@ export default function CreateEvent({ onEventCreated, date }: Props) {
 
     // inputが空でない場合のみ変換を実行
     if (inputValue) {
-      // 1. inputの値を元にDateオブジェクトを生成 (ブラウザのローカルタイムゾーンで解釈)
+      // inputの値を元にDateオブジェクトを生成
       const localDate = new Date(inputValue);
 
-      // 2. toISOString()でUTCのISO 8601形式に変換
+      // toISOString()でUTCのISO 8601形式に変換
       const iso = localDate.toISOString();
       setISOFinishTime(iso);
     } else {
@@ -255,7 +277,7 @@ export default function CreateEvent({ onEventCreated, date }: Props) {
             id="workplace"
             value={selectedWorkplace}
             onChange={(e) => setSelectedWorkplace(e.target.value)}
-            className="p-2 border rounded-md disabled:bg-gray-100 disabled:opacity-70 disabled:cursor-not-allowed"
+            className="p-2 border rounded-md disabled:bg-gray-200 disabled:opacity-70 disabled:cursor-not-allowed"
             disabled={eventType !== 'バイト'}
           >
             <option value=""></option>
@@ -271,7 +293,7 @@ export default function CreateEvent({ onEventCreated, date }: Props) {
             type="checkbox"
             id="isAllday"
             checked={isAllday}
-            onChange={(e) => setIsAllday(e.target.value)}
+            onChange={(e) => setIsAllday(e.target.checked)}
             className="p-2 border rounded-md transform scale-150"
           />
         </div>
@@ -282,7 +304,8 @@ export default function CreateEvent({ onEventCreated, date }: Props) {
             id="startTime"
             value={startTime}
             onChange={handleStart_timeChange}
-            className="p-2 border rounded-md"
+            className="p-2 border rounded-md disabled:bg-gray-200 disabled:opacity-70 disabled:cursor-not-allowed"
+            disabled={isAllday}
           />
         </div>
         <div className="flex flex-col">
@@ -292,7 +315,8 @@ export default function CreateEvent({ onEventCreated, date }: Props) {
             id="finishTime"
             value={finishTime}
             onChange={handleFinish_timeChange}
-            className="p-2 border rounded-md"
+            className="p-2 border rounded-md disabled:bg-gray-200 disabled:opacity-70 disabled:cursor-not-allowed"
+            disabled={isAllday}
           />
         </div>
         <div className="flex flex-col">
@@ -301,7 +325,7 @@ export default function CreateEvent({ onEventCreated, date }: Props) {
             id="breakMinutes"
             value={breakMinutes}
             onChange={(e) => setBreakMinutes(e.target.value)}
-            className="p-2 border rounded-md disabled:bg-gray-100 disabled:opacity-70 disabled:cursor-not-allowed"
+            className="p-2 border rounded-md disabled:bg-gray-200 disabled:opacity-70 disabled:cursor-not-allowed"
             disabled={eventType !== 'バイト'}
           >
             {Array.from({ length: 61 }, (_, i) => i).map(minute => (
