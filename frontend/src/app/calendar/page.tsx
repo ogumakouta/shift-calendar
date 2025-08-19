@@ -74,7 +74,7 @@ export default function CalendarPage() {
   // 認証が成功した場合に表示されるページ内容
   return (
     <div className="flex">
-      <CreateEvent onEventCreated={handleEventCreated} />
+      <CreateEvent onEventCreated={handleEventCreated} date={selectedDate}/>
       <Calender value={selectedDate} onChange={setSelectedDate} events={events}/>
       <div className='w-[280px]'>
         <EventListArea date={selectedDate} events={events} onEventCreated={handleEventCreated}/>

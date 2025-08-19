@@ -1,12 +1,17 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { jwtDecode } from "jwt-decode";
+import type { Value } from "react-calendar/dist/cjs/shared/types";
 
+// 親コンポーネントから受け取るpropsの型定義
+type Props = {
+  onEventCreated: Function ;
+  date: Value;
+};
 
-export default function CreateEvent({ onEventCreated }) {
+export default function CreateEvent({ onEventCreated, date }: Props) {
   const [eventType, setEventType] = useState('');
   const [user_id, setUser_id] = useState('');
-  // const [label_id, setLabel_id] = useState('');
   const [title, setTitle] = useState('');
   const [selectedWorkplace, setSelectedWorkplace] = useState('');
   const [workplace, setWorkplace] = useState([]);
@@ -84,6 +89,31 @@ export default function CreateEvent({ onEventCreated }) {
 
     fetchData();
   }, [user_id]);
+
+  // カレンダー上で選択された日付を予定作成フォームに入れる
+  useEffect (() => {
+    // dateが有効なDateオブジェクトでない場合は処理を中断
+    if (!date || !(date instanceof Date)) return;
+
+    const nowHour = new Date(Date.now()).getHours();
+
+    const selectedYear = date.getFullYear();
+    const selectedMonth = String(date.getMonth() + 1).padStart(2, '0');
+    const selectedDate = String(date.getDate()).padStart(2, '0');
+
+    const formatStartDate = `${selectedYear}-${selectedMonth}-${selectedDate}T${String((nowHour + 1) % 24).padStart(2, '0')}:00`;
+    const formatFinishDate = `${selectedYear}-${selectedMonth}-${selectedDate}T${String((nowHour + 2) % 24).padStart(2, '0')}:00`;
+
+    setStartTime(formatStartDate);
+    setFinishTime(formatFinishDate);
+
+    if (formatStartDate) {
+      setISOStartTime(new Date(formatStartDate).toISOString());
+    }
+    if (formatFinishDate) {
+      setISOFinishTime(new Date(formatFinishDate).toISOString());
+    }
+  }, [date])
 
   // 開始時間をISO8601の形式に変換
   const handleStart_timeChange = (e) => {
@@ -248,7 +278,7 @@ export default function CreateEvent({ onEventCreated }) {
         <div className="flex flex-col">
           <label htmlFor="startTime" className="font-semibold text-left">開始時間：</label>
           <input
-          type="datetime-local"
+            type="datetime-local"
             id="startTime"
             value={startTime}
             onChange={handleStart_timeChange}
