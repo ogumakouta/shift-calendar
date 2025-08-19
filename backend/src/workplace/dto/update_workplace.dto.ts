@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsInt, IsString, IsOptional } from "class-validator";
+import { IsNotEmpty, IsInt, IsString, IsEnum, IsOptional } from "class-validator";
+
+export enum Payment_month {
+  crrent = 'current',
+  next = 'next', 
+  after_next = 'after_next',
+}
 
 export class UpdateWorkplaceDto {
   @IsString()
@@ -12,6 +18,9 @@ export class UpdateWorkplaceDto {
   @IsInt()
   @IsNotEmpty()
   closing_day: number;
+
+  @IsEnum(Payment_month)
+  payment_month: Payment_month;
 
   @IsInt()
   @IsNotEmpty()

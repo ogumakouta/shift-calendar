@@ -9,7 +9,7 @@ export class WorkplaceService {
 
   // 勤務先作成
   async create(createWorkplaceDto: CreateWorkplaceDto) {
-    const { user_id, name, location, closing_day, payment_day, hourly_wage } =
+    const { user_id, name, location, closing_day, payment_month, payment_day, hourly_wage } =
       createWorkplaceDto;
 
     try {
@@ -19,6 +19,7 @@ export class WorkplaceService {
           name,
           location: location ? String(location) : null,
           closing_day,
+          payment_month,
           payment_day,
           hourly_wage,
         },
@@ -27,6 +28,7 @@ export class WorkplaceService {
           name: true,
           location: true,
           closing_day: true,
+          payment_month: true,
           payment_day: true,
           hourly_wage: true,
         },

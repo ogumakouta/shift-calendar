@@ -15,6 +15,7 @@ type Workplace = {
   name: string;
   location: string;
   closing_day: number | string;
+  payment_month: number | string;
   payment_day: number | string;
   hourly_wage: number | string;
 };
@@ -47,6 +48,7 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
   const [newWorkplaceName, setNweWorkplaceName] = useState('');
   const [newWorkplaceLocation, setNewWorkplaceLocation] = useState('');
   const [newWorkplaceClosing_day, setNewWorkplaceClosing_day] = useState('');
+  const [newWorkplacePayment_month, setNewWorkplacePayment_month] = useState('');
   const [newWorkplacePayment_day, setNewWorkplacePayment_day] = useState('');
   const [newWorkplaceHourly_wage, setNewWorkplaceHourly_wage] = useState('');
   const [newPlaceMassage, setNewPlaceMessage] = useState('');
@@ -56,6 +58,7 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
     setNweWorkplaceName('');
     setNewWorkplaceLocation('');
     setNewWorkplaceClosing_day('');
+    setNewWorkplacePayment_month('');
     setNewWorkplacePayment_day('');
     setNewWorkplaceHourly_wage('');
   }
@@ -78,10 +81,10 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
   }, [user_id])
 
   // map内の各inputを個別に編集するためのハンドラ
-  const handleWorkplaceNameChange = (id: number | string, newName: string, newLocation: string, newClosing_day: number | string, newPayment_day: number | string, newHourly_wage: number | string,) => {
+  const handleWorkplaceNameChange = (id: number | string, newName: string, newLocation: string, newClosing_day: number | string, newPayment_month: number | string, newPayment_day: number | string, newHourly_wage: number | string,) => {
     setWorkplaces(prevWorkplaces => 
       prevWorkplaces.map(workplace => 
-        workplace.id === id ? { ...workplace, name: newName, location: newLocation, closing_day: newClosing_day, payment_day: newPayment_day, hourly_wage: newHourly_wage } : workplace
+        workplace.id === id ? { ...workplace, name: newName, location: newLocation, closing_day: newClosing_day,payment_month: newPayment_month, payment_day: newPayment_day, hourly_wage: newHourly_wage } : workplace
       )
     );
   };
@@ -101,6 +104,7 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
           name: targetWorkplace.name,
           location: targetWorkplace.location,
           closing_day: parseInt(String(targetWorkplace.closing_day), 10),
+          payment_month: targetWorkplace.payment_month,
           payment_day: parseInt(String(targetWorkplace.payment_day), 10),
           hourly_wage: parseInt(String(targetWorkplace.hourly_wage), 10),
         }),
@@ -145,8 +149,9 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
     e.preventDefault();
 
     // 全ての項目が埋まってなかったら処理を中断
-    if (!newWorkplaceName.trim() || !newWorkplaceLocation.trim() || !newWorkplaceClosing_day.trim() || !newWorkplacePayment_day.trim() || !newWorkplaceHourly_wage.trim()) {
+    if (!newWorkplaceName.trim() || !newWorkplaceLocation.trim() || !newWorkplaceClosing_day.trim() || !newWorkplacePayment_month.trim() || !newWorkplacePayment_day.trim() || !newWorkplaceHourly_wage.trim()) {
       setNewPlaceMessage('全ての項目を入力してください');
+      return;
     }
     // 同じ勤務先名があれが処理を中断
     const targetWorkplace = workplaces.find(workplace => workplace.name === newWorkplaceName);
@@ -167,6 +172,7 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
           name: newWorkplaceName,
           location: newWorkplaceLocation,
           closing_day: parseInt(String(newWorkplaceClosing_day), 10),
+          payment_month: newWorkplacePayment_month,
           payment_day: parseInt(String(newWorkplacePayment_day), 10),
           hourly_wage: parseInt(String(newWorkplaceHourly_wage), 10),
         }),
@@ -200,7 +206,7 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
                     type="text"
                     id={`name-${workplace.id}`}
                     value={workplace.name}
-                    onChange={(e) => handleWorkplaceNameChange(workplace.id, e.target.value, workplace.location, workplace.closing_day, workplace.payment_day, workplace.hourly_wage)}
+                    onChange={(e) => handleWorkplaceNameChange(workplace.id, e.target.value, workplace.location, workplace.closing_day, workplace.payment_month, workplace.payment_day, workplace.hourly_wage)}
                     className="p-2 border rounded-md"
                   />
                   <label htmlFor={`location-${workplace.id}`} className="font-semibold mt-3">勤務先住所:</label>
@@ -208,14 +214,14 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
                     type="text"
                     id={`location-${workplace.id}`}
                     value={workplace.location || ''}
-                    onChange={(e) => handleWorkplaceNameChange(workplace.id, workplace.name, e.target.value, workplace.closing_day, workplace.payment_day, workplace.hourly_wage)}
+                    onChange={(e) => handleWorkplaceNameChange(workplace.id, workplace.name, e.target.value, workplace.closing_day, workplace.payment_month, workplace.payment_day, workplace.hourly_wage)}
                     className="p-2 border rounded-md"
                   />
                   <label htmlFor={`closing_day-${workplace.id}`} className="font-semibold mt-3">締め日:</label>
                   <select
                     id={`closing_day-${workplace.id}`}
                     value={workplace.closing_day}
-                    onChange={(e) => handleWorkplaceNameChange(workplace.id, workplace.name, workplace.location, e.target.value, workplace.payment_day, workplace.hourly_wage)}
+                    onChange={(e) => handleWorkplaceNameChange(workplace.id, workplace.name, workplace.location, e.target.value, workplace.payment_month, workplace.payment_day, workplace.hourly_wage)}
                     className="p-2 border rounded-md"
                   >
                     {Array.from({ length: 30 }, (_, i) => i + 1).map(day => (
@@ -226,25 +232,37 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
                     <option value="99">月末</option>
                   </select>
                   <label htmlFor={`payment_day-${workplace.id}`} className="font-semibold mt-3">給料日:</label>
-                  <select
-                    id={`payment_day-${workplace.id}`}
-                    value={workplace.payment_day}
-                    onChange={(e) => handleWorkplaceNameChange(workplace.id, workplace.name, workplace.location, workplace.closing_day, e.target.value, workplace.hourly_wage)}
-                    className="p-2 border rounded-md"
-                  >
-                    {Array.from({ length: 30 }, (_, i) => i + 1).map(day => (
-                      <option key={day} value={day}>
-                        {day}日
-                      </option>
-                    ))}
-                    <option value="99">月末</option>
-                  </select>
+                  <div className="flex gap-2">
+                    <select 
+                      id={`payment_month-${workplace.id}`}
+                      value={workplace.payment_month}
+                      onChange={(e) => handleWorkplaceNameChange(workplace.id, workplace.name, workplace.location, workplace.closing_day, e.target.value, workplace.payment_day, workplace.hourly_wage)}
+                      className="p-2 border rounded-md w-full"
+                    >
+                      <option value="current">当月</option>
+                      <option value="next">翌月</option>
+                      <option value="after_next">翌々月</option>
+                    </select>
+                    <select
+                      id={`payment_day-${workplace.id}`}
+                      value={workplace.payment_day}
+                      onChange={(e) => handleWorkplaceNameChange(workplace.id, workplace.name, workplace.location, workplace.closing_day, workplace.payment_month, e.target.value, workplace.hourly_wage)}
+                      className="p-2 border rounded-md w-full"
+                    >
+                      {Array.from({ length: 30 }, (_, i) => i + 1).map(day => (
+                        <option key={day} value={day}>
+                          {day}日
+                        </option>
+                      ))}
+                      <option value="99">月末</option>
+                    </select>
+                  </div>
                   <label htmlFor={`hourly_wage-${workplace.id}`} className="font-semibold mt-3">時給:</label>
                   <input
                     type="number"
                     id={`hourly_wage-${workplace.id}`}
                     value={workplace.hourly_wage}
-                    onChange={(e) => handleWorkplaceNameChange(workplace.id, workplace.name, workplace.location, workplace.closing_day, workplace.payment_day, e.target.value)}
+                    onChange={(e) => handleWorkplaceNameChange(workplace.id, workplace.name, workplace.location, workplace.closing_day, workplace.payment_month, workplace.payment_day, e.target.value)}
                     className="p-2 border rounded-md"
                   />
                   <button 
@@ -312,20 +330,33 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
               <option value="99">月末</option>
             </select>
             <label htmlFor={'new-payment_day'} className="font-semibold mt-3">給料日:</label>
-            <select
-              id={'new-payment_day'}
-              value={newWorkplacePayment_day}
-              onChange={(e) => setNewWorkplacePayment_day(e.target.value)}
-              className="p-2 border rounded-md"
-            >
-              <option></option>
-              {Array.from({ length: 30 }, (_, i) => i + 1).map(day => (
-                <option key={day} value={day}>
-                  {day}日
-                </option>
-              ))}
-              <option value="99">月末</option>
-            </select>
+            <div className="flex gap-2">
+              <select 
+                id={'new-payment_month'}
+                value={newWorkplacePayment_month}
+                onChange={(e) => setNewWorkplacePayment_month(e.target.value)}
+                className="p-2 border rounded-md w-full"
+              >
+                <option></option>
+                <option value="current">当月</option>
+                <option value="next">翌月</option>
+                <option value="after_next">翌々月</option>
+              </select>
+              <select
+                id={'new-payment_day'}
+                value={newWorkplacePayment_day}
+                onChange={(e) => setNewWorkplacePayment_day(e.target.value)}
+                className="p-2 border rounded-md w-full"
+              >
+                <option></option>
+                {Array.from({ length: 30 }, (_, i) => i + 1).map(day => (
+                  <option key={day} value={day}>
+                    {day}日
+                  </option>
+                ))}
+                <option value="99">月末</option>
+              </select>
+            </div>
             <label htmlFor={'new-hourly_wage'} className="font-semibold mt-3">時給:</label>
             <input
               type="number"

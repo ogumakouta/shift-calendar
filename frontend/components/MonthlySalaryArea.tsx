@@ -39,8 +39,22 @@ function calculateWorkHours(start_time, finish_time, break_minutes) {
 
 
 export default function MonthlySalaryArea({ date, events }: Props) {
-  // カレンダーで選択した日付を格納
-  const selectDate =new Date(date);
+  const [displayDate, setDisplayDate] = useState(new Date());
+
+  // 月を「前へ」「次へ」と変更するための関数
+  const handlePrevMonth = () => {
+    setDisplayDate(currentDate => {
+      // 現在の表示月から1ヶ月前の日付を生成して更新
+      return new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+    });
+  };
+  const handleNextMonth = () => {
+    setDisplayDate(currentDate => {
+      // 現在の表示月から1ヶ月後の日付を生成して更新
+      return new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
+    });
+  };
+
   // 月の総給料を保持するstate
   const [monthlySalary, setMonthlySalary] = useState(0);
   // 月の総勤務時間を保持するstate
@@ -62,38 +76,54 @@ export default function MonthlySalaryArea({ date, events }: Props) {
       setIsLoading(true);
 
       // 選択された年月を取得
-      const selectedYear = date.getFullYear();
-      const selectedMonth = date.getMonth();
+      const selectedYear = displayDate.getFullYear();
+      const selectedMonth = displayDate.getMonth();
+
+      // 現在の年月を取得
+      const nowDate = Date.now();
+      const displayYear = new Date(nowDate).getFullYear();
+      const displayMonth = new Date(nowDate).getMonth();
 
       // 予定をフィルタリングする関数
       const filteredEvents = events.filter(event => {
         // 必要な情報がなければ計算対象外
-        if (!event.start_time) {
+        if (
+          !event.start_time || 
+          !event.workplace || 
+          event.workplace.closing_day == null ||
+          !event.workplace.payment_month
+        ) {
           return false;
         }
 
         // 予定の開始時間を取得
         const eventDate = new Date(event.start_time);
-        // 締め日を取得
+        const eventYear = eventDate.getFullYear();
+        const eventMonth = eventDate.getMonth();
+        const eventDay = eventDate.getDate();
+        
         const closingDay = event.workplace.closing_day;
+        const paymentMonthType = event.workplace.payment_month;
 
-        let startDate, endDate;
-        
-        // 選択された月の最終日を取得
-        const lastDayOfSelectedMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+        // 予定の締め日と支給月を取得する
+        let closingYear = eventYear;
+        let closingMonth = eventMonth;
 
-        // 締め日が月末か判定
-        if (closingDay === 99) {
-          // 月末締め
-          startDate = new Date(selectedYear, selectedMonth, 1);
-          endDate = new Date(selectedYear, selectedMonth, lastDayOfSelectedMonth, 23, 59, 59);
-        } else {
-          // 月途中締め
-          startDate = new Date(selectedYear, selectedMonth - 1, closingDay + 1);
-          endDate = new Date(selectedYear, selectedMonth, closingDay, 23, 59, 59);
+        // 月途中締めで、勤務日が締め日を過ぎている場合、締め月は翌月になる
+        if (closingDay !== 99 && eventDay > closingDay) {
+          closingMonth += 1;
         }
-        
-        return eventDate >= startDate && eventDate <= endDate;
+
+        // 支払日を設定
+        const paymentDate = new Date(closingYear, closingMonth, 1); // 日にちを「1日」に固定
+
+        if (paymentMonthType === 'next') {
+          paymentDate.setMonth(paymentDate.getMonth() + 1); // 翌月
+        } else if (paymentMonthType === 'after_next') {
+          paymentDate.setMonth(paymentDate.getMonth() + 2); // 翌々月
+        }
+
+        return paymentDate.getFullYear() === selectedYear && paymentDate.getMonth() === selectedMonth;
       });
 
       if (filteredEvents.length === 0) {
@@ -147,12 +177,28 @@ export default function MonthlySalaryArea({ date, events }: Props) {
     };
 
     calculateSalary();
-  }, [date, events]); // dateかeventsが変更されたら再実行
+  }, [events, displayDate]);
 
   return (
     <div className='bg-[#fbfbfb] ml-5 mr-5 mt-2 rounded-md max-w-[280px] w-full h-[360.5px] text-center p-2 flex flex-col'>
-      <div className='text-xl mb-2'>
-        {selectDate.getMonth() + 1}月の収入
+      <div className='text-xl mb-2 flex items-center justify-center space-x-2'>
+        <button 
+          onClick={handlePrevMonth} 
+          className="px-3 py-1 rounded-full hover:bg-gray-200 transition-colors"
+          aria-label="前の月へ"
+        >
+          &lt;
+        </button>
+        <div className="w-full text-center">
+          {displayDate.getFullYear()}年{displayDate.getMonth() + 1}月の収入
+        </div>
+        <button 
+          onClick={handleNextMonth} 
+          className="px-3 py-1 rounded-full hover:bg-gray-200 transition-colors"
+          aria-label="次の月へ"
+        >
+          &gt;
+        </button>
       </div>
       <div className='m-5 flex justify-center'>
         <div>

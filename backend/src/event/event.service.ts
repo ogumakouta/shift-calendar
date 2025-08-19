@@ -76,6 +76,7 @@ export class EventService {
               id: true,
               name: true,
               closing_day: true,
+              payment_month: true,
             },
           },
         },
