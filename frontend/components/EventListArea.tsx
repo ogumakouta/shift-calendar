@@ -51,8 +51,9 @@ export default function EventListArea({ date, events, onEventCreated }: Props) {
               <details className='w-full'>
                 <summary className='bg-[#f2f2f2] text-center p-2 m-1 rounded-md cursor-pointer'>{event.title}</summary>
                 <div className="p-2 text-left">
-                  <div>開始時間：{formatTime(event.start_time)}</div>
-                  <div>終了時間：{formatTime(event.finish_time)}</div>
+                  {!event.is_allday && <div>開始時間：{formatTime(event.start_time)}</div>}
+                  {!event.is_allday && <div>終了時間：{formatTime(event.finish_time)}</div>}
+                  {event.is_allday && <div>時間：<strong>終日</strong></div>}
                   {event.workplace && <div>休憩時間：{event.break_minutes ?? 0}分</div>}
                   {event.workplace && <div>勤務先：{event.workplace.name}</div>}
                   {event.location && <div>場所：{event.location}</div>}
