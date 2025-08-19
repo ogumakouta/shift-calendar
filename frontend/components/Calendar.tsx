@@ -24,8 +24,10 @@ function formatDate(date) {
 }
 
 export default function MyCalendar({ value, onChange, events}: Props) {
-  // 予定がある日付のリストを作成
-  const eventDates = events.map(event => event.start_time.substring(0, 10));
+  const eventDates = events.map(event => {
+    const eventDate = new Date(event.start_time);
+    return formatDate(eventDate);
+  });
 
   const addEventMarker = ({ date, view }) => {
     // 月表示のときのみ印を付ける
