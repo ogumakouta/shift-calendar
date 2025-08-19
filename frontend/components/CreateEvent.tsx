@@ -93,6 +93,16 @@ export default function CreateEvent({ onEventCreated, date }: Props) {
     fetchData();
   }, [user_id]);
 
+  const handleEventTypeChange = (e) => {
+    const newType = e.target.value;
+    setEventType(newType);
+
+    // もし新しい種類が「バイト」なら、「終日」チェックを外す
+    if (newType === 'バイト') {
+      setIsAllday(false);
+    }
+  };
+
   // カレンダー上で選択された日付を予定作成フォームに入れる
   useEffect (() => {
     // dateが有効なDateオブジェクトでない場合は処理を中断
@@ -181,6 +191,8 @@ export default function CreateEvent({ onEventCreated, date }: Props) {
       if (findWorkplace) {
         setTitle(findWorkplace.name)
       }
+    } else {
+      setTitle('');
     }
   }, [eventType, selectedWorkplace])
 
@@ -263,7 +275,7 @@ export default function CreateEvent({ onEventCreated, date }: Props) {
           <select
             id="eventType"
             value={eventType}
-            onChange={(e) => setEventType(e.target.value)}
+            onChange={handleEventTypeChange}
             className="p-2 border rounded-md"
           >
             <option value=""></option>
@@ -279,7 +291,8 @@ export default function CreateEvent({ onEventCreated, date }: Props) {
             id="title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="p-2 border rounded-md"
+            className="p-2 border rounded-md disabled:bg-gray-200 disabled:opacity-70 disabled:cursor-not-allowed"
+            disabled={eventType === 'バイト'}
           />
         </div>
         <div className="flex flex-col">
@@ -295,7 +308,6 @@ export default function CreateEvent({ onEventCreated, date }: Props) {
             {workplace.map((workplace) => (
               <option key={workplace.id} value={workplace.id}>{workplace.name}</option>
             ))}
-
           </select>
         </div>
         <div className="flex">
@@ -305,7 +317,8 @@ export default function CreateEvent({ onEventCreated, date }: Props) {
             id="isAllday"
             checked={isAllday}
             onChange={(e) => setIsAllday(e.target.checked)}
-            className="p-2 border rounded-md transform scale-150"
+            className="p-2 border rounded-md transform scale-150 disabled:bg-gray-200 disabled:opacity-70 disabled:cursor-not-allowed"
+            disabled={eventType === 'バイト'}
           />
         </div>
         <div className="flex flex-col">
