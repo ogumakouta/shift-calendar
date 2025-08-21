@@ -199,7 +199,12 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
           workplaces.map(workplace => (
             <div className='flex' key={workplace.id}>
               <details className='w-full'>
-                <summary className='bg-[#f2f2f2] text-center p-2 m-1 rounded-md cursor-pointer'>{workplace.name}</summary>
+                <summary 
+                  className='bg-[#f2f2f2] text-center p-2 m-1 rounded-md cursor-pointer 
+                  dark:bg-[#727272] dark:text-white'
+                >
+                  {workplace.name}
+                </summary>
                 <div className="p-2 text-left flex flex-col">
                   <label htmlFor={`name-${workplace.id}`} className="font-semibold mt-3">勤務先名:</label>
                   <input

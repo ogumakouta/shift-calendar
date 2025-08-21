@@ -161,7 +161,9 @@ export default function EventLabelSettingForm({ user_id }: Props) {
                   id={`name-${label.id}`}
                   value={label.name}
                   onChange={(e) => handleLabelNameChange(label.id, e.target.value, label.common)}
-                  className="p-2 border rounded-md disabled:bg-gray-200 disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="p-2 border rounded-md
+                  disabled:bg-gray-200 disabled:opacity-70 disabled:cursor-not-allowed
+                  dark:disabled:bg-gray-600"
                   disabled={label.name === '予定' || label.name === 'バイト'}
                 />
               </div>
@@ -169,7 +171,9 @@ export default function EventLabelSettingForm({ user_id }: Props) {
               <button 
                 type="button"
                 onClick={() => handleUpdate(user_id, label.id)}
-                className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors w-[70px] h-[50px]  ml-3 mr-3 disabled:bg-gray-400 disabled:opacity-70 disabled:cursor-not-allowed"
+                className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors w-[70px] h-[50px]  ml-3 mr-3
+                disabled:bg-gray-400 disabled:opacity-70 disabled:cursor-not-allowed
+                dark:disabled:bg-gray-500"
                 disabled={label.name === '予定' || label.name === 'バイト'}
               >
                 更新
@@ -177,7 +181,9 @@ export default function EventLabelSettingForm({ user_id }: Props) {
               <button 
                 type="button"
                 onClick={() => handleDel(user_id, label.id)}
-                className="p-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors w-[70px] h-[50px] disabled:bg-gray-400 disabled:opacity-70 disabled:cursor-not-allowed"
+                className="p-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors w-[70px] h-[50px]
+                disabled:bg-gray-400 disabled:opacity-70 disabled:cursor-not-allowed
+                dark:disabled:bg-gray-500"
                 disabled={label.name === '予定' || label.name === 'バイト'}
               >
                 削除
