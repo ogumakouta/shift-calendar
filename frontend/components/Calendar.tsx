@@ -5,6 +5,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import  './Calendar.css';
 import type { Value } from "react-calendar/dist/cjs/shared/types";
+import { useEffect, useState } from 'react';
 
 
 // 親コンポーネントから受け取るpropsの型定義
@@ -23,7 +24,26 @@ function formatDate(date) {
   return `${year}-${month}-${day}`;
 }
 
+const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
 export default function MyCalendar({ value, onChange, events}: Props) {
+  const [isDarkMode, setIsDarkMode] = useState(mediaQuery.matches);
+
+  useEffect(() => {
+    // osのテーマが変更されたときに実行される関数
+    const handleChange = (e) => {
+      setIsDarkMode(e.matches);
+    };
+
+    // イベントリスナーを追加
+    mediaQuery.addEventListener('change', handleChange);
+
+    // コンポーネントが不要になったときにリスナーを解除
+    return () => {
+      mediaQuery.removeEventListener('change', handleChange);
+    };
+  }, []);
+
   const eventDates = events.map(event => {
     const eventDate = new Date(event.start_time);
     return formatDate(eventDate);
@@ -42,7 +62,7 @@ export default function MyCalendar({ value, onChange, events}: Props) {
   };
 
   return (
-    <div>
+    <div className={isDarkMode ? 'dark-mode' : ''}>
       <Calendar 
         onChange={onChange}
         value={value} 
