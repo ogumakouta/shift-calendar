@@ -70,7 +70,7 @@ export default function EventListArea({ date, events, onEventCreated }: Props) {
             </div>
           ))
         ) : (
-          <div className="mt-4 text-gray-500">この日の予定はありません。</div>
+          <div className="mt-4 text-gray-500 dark:text-white">この日の予定はありません。</div>
         )}
       </div>
     </div>
