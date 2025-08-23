@@ -57,26 +57,30 @@ export default function SettingPage() {
   return (
     <div className="flex">
       <div>
-      <div className="m-4 flex flex-col w-[200px] h-[680px] bg-[#fbfbfb] rounded-md">
+      <div className="m-4 flex flex-col w-[200px] h-[680px] bg-[#fbfbfb] rounded-md
+      dark:bg-[#565656]">
         <h1 className="text-2xl text-center m-3">設定</h1>
         <button
         type="button"
         onClick={handleUser}
-        className="my-2 p-2 hover:bg-gray-200 transition-colors"
+        className="my-2 p-2 hover:bg-gray-200 transition-colors
+        dark:hover:bg-gray-500"
         >
           ユーザ設定
         </button>
         <button
         type="button"
         onClick={handleEventLabel}
-        className="my-2 p-2 hover:bg-gray-200 transition-colors"
+        className="my-2 p-2 hover:bg-gray-200 transition-colors
+        dark:hover:bg-gray-500"
         >
           予定の種類設定
         </button>
         <button
         type="button"
         onClick={handleWorkplace}
-        className="my-2 p-2 hover:bg-gray-200 transition-colors"
+        className="my-2 p-2 hover:bg-gray-200 transition-colors
+        dark:hover:bg-gray-500"
         >
           勤務先設定
         </button>

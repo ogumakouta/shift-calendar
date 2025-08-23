@@ -291,7 +291,8 @@ export default function CreateEvent({ onEventCreated, date }: Props) {
             id="title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="p-2 border rounded-md disabled:bg-gray-200 disabled:opacity-70 disabled:cursor-not-allowed"
+            className="p-2 border rounded-md disabled:bg-gray-200 disabled:opacity-70 disabled:cursor-not-allowed
+            dark:disabled:bg-gray-600"
             disabled={eventType === 'バイト'}
           />
         </div>
@@ -301,7 +302,8 @@ export default function CreateEvent({ onEventCreated, date }: Props) {
             id="workplace"
             value={selectedWorkplace}
             onChange={(e) => setSelectedWorkplace(e.target.value)}
-            className="p-2 border rounded-md disabled:bg-gray-200 disabled:opacity-70 disabled:cursor-not-allowed"
+            className="p-2 border rounded-md disabled:bg-gray-200 disabled:opacity-70 disabled:cursor-not-allowed
+            dark:disabled:bg-gray-600"
             disabled={eventType !== 'バイト'}
           >
             <option value=""></option>
@@ -317,7 +319,8 @@ export default function CreateEvent({ onEventCreated, date }: Props) {
             id="isAllday"
             checked={isAllday}
             onChange={(e) => setIsAllday(e.target.checked)}
-            className="p-2 border rounded-md transform scale-150 disabled:bg-gray-200 disabled:opacity-70 disabled:cursor-not-allowed"
+            className="p-2 border rounded-md transform scale-150 disabled:bg-gray-200 disabled:opacity-70 disabled:cursor-not-allowed
+            dark:disabled:bg-gray-600"
             disabled={eventType === 'バイト'}
           />
         </div>
@@ -328,7 +331,8 @@ export default function CreateEvent({ onEventCreated, date }: Props) {
             id="startTime"
             value={startTime}
             onChange={handleStart_timeChange}
-            className="p-2 border rounded-md disabled:bg-gray-200 disabled:opacity-70 disabled:cursor-not-allowed"
+            className="p-2 border rounded-md disabled:bg-gray-200 disabled:opacity-70 disabled:cursor-not-allowed
+            dark:disabled:bg-gray-600"
             disabled={isAllday}
           />
         </div>
@@ -339,7 +343,8 @@ export default function CreateEvent({ onEventCreated, date }: Props) {
             id="finishTime"
             value={finishTime}
             onChange={handleFinish_timeChange}
-            className="p-2 border rounded-md disabled:bg-gray-200 disabled:opacity-70 disabled:cursor-not-allowed"
+            className="p-2 border rounded-md disabled:bg-gray-200 disabled:opacity-70 disabled:cursor-not-allowed
+            dark:disabled:bg-gray-600"
             disabled={isAllday}
           />
         </div>
@@ -349,7 +354,8 @@ export default function CreateEvent({ onEventCreated, date }: Props) {
             id="breakMinutes"
             value={breakMinutes}
             onChange={(e) => setBreakMinutes(e.target.value)}
-            className="p-2 border rounded-md disabled:bg-gray-200 disabled:opacity-70 disabled:cursor-not-allowed"
+            className="p-2 border rounded-md disabled:bg-gray-200 disabled:opacity-70 disabled:cursor-not-allowed
+            dark:disabled:bg-gray-600"
             disabled={eventType !== 'バイト'}
           >
             {Array.from({ length: 61 }, (_, i) => i).map(minute => (

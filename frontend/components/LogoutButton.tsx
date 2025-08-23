@@ -27,7 +27,12 @@ export default function LogoutButton() {
 
   // ログインしてたら表示
   if(isLogin) {
-    return <button className="h-12 p-3 bg-white text-red-500 border-glay-500 cursor-pointer rounded-md w-full" onClick={logout}>ログアウト</button>
+    return <button 
+    className="h-12 p-3 bg-white text-red-500 border-glay-500 cursor-pointer rounded-md w-full
+    dark:bg-[#525252] dark:text-red-500" 
+    onClick={logout}>
+      ログアウト
+    </button>
   }
 
   // ログインしてなかったら非表示

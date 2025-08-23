@@ -180,11 +180,13 @@ export default function MonthlySalaryArea({ date, events }: Props) {
   }, [events, displayDate]);
 
   return (
-    <div className='bg-[#fbfbfb] ml-5 mr-5 mt-2 rounded-md max-w-[280px] w-full h-[360.5px] text-center p-2 flex flex-col'>
+    <div className='bg-[#fbfbfb] ml-5 mr-5 mt-2 rounded-md max-w-[280px] w-full h-[360.5px] text-center p-2 flex flex-col 
+    dark:bg-[#505050] dark:text-white'>
       <div className='text-xl mb-2 flex items-center justify-center space-x-2'>
         <button 
           onClick={handlePrevMonth} 
-          className="px-3 py-1 rounded-full hover:bg-gray-200 transition-colors"
+          className="px-3 py-1 rounded-full hover:bg-gray-200 transition-colors
+          dark:hover:bg-gray-500"
           aria-label="前の月へ"
         >
           &lt;
@@ -194,7 +196,8 @@ export default function MonthlySalaryArea({ date, events }: Props) {
         </div>
         <button 
           onClick={handleNextMonth} 
-          className="px-3 py-1 rounded-full hover:bg-gray-200 transition-colors"
+          className="px-3 py-1 rounded-full hover:bg-gray-200 transition-colors
+          dark:hover:bg-gray-500"
           aria-label="次の月へ"
         >
           &gt;
