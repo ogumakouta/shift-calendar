@@ -74,7 +74,7 @@ blog_app/
 ### 1. リポジトリのクローン
 ```bash
 git clone <repository-url>
-cd blog_app
+cd shift-calendar
 ```
 
 ### 2. 環境変数の設定
