@@ -49,20 +49,21 @@
 blog_app/
 ├── backend/                 # NestJS バックエンド
 │   ├── src/
-│   │   ├── auth/          # 認証関連
-│   │   ├── user/          # ユーザー管理
-│   │   ├── workplace/     # 勤務先管理
-│   │   ├── event/         # 予定管理
-│   │   ├── event-label/   # 予定ラベル管理
-│   │   └── prisma/        # データベース接続
-│   ├── prisma/            # データベーススキーマ
+│   │   ├── auth/            # 認証関連
+│   │   ├── user/            # ユーザー管理
+│   │   ├── workplace/       # 勤務先管理
+│   │   ├── event/           # 予定管理
+│   │   ├── event-label/     # 予定ラベル管理
+│   │   └── prisma/          # データベース接続
+│   ├── prisma/              # データベーススキーマ
 │   └── Dockerfile
-├── frontend/               # Next.js フロントエンド
-│   ├── src/app/           # ページコンポーネント
-│   ├── components/        # 再利用可能コンポーネント
+├── frontend/                # Next.js フロントエンド
+│   ├── src/app/             # ページコンポーネント
+│   ├── components/          # 再利用可能コンポーネント
 │   └── Dockerfile
-├── nginx/                  # Nginx設定
-└── docker-compose.yml      # 開発環境用
+├── nginx/                   # Nginx設定
+├── docker-compose.yml       # 開発環境用
+└── docker-compose.prod.yml  # 本番環境用
 ```
 
 ## セットアップ
@@ -115,7 +116,7 @@ MYSQL_PASSWORD="password"
 
 ### 3. Docker Compose での起動
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 これで以下のサービスが起動します：
@@ -126,8 +127,8 @@ docker-compose up -d
 ### 4. データベースの初期化・準備
 ```bash
 # バックエンドコンテナ内で実行
-docker-compose exec backend npx prisma migrate dev
-docker-compose exec backend npx prisma generate
+docker compose exec backend npx prisma migrate dev
+docker compose exec backend npx prisma generate
 ```
 ```sql
 # event_labelsテーブルにデータを追加
@@ -198,48 +199,48 @@ npm run lint           # リンター実行
 
 ```bash
 # 全サービス起動
-docker-compose up -d
+docker compose up -d
 
 # ログ確認
-docker-compose logs -f
+docker compose logs -f
 
 # 特定サービスのログ
-docker-compose logs -f backend
+docker compose logs -f backend
 
 # サービス停止
-docker-compose down
+docker compose down
 
 # ボリュームも含めて完全削除
-docker-compose down -v
+docker compose down -v
 ```
 
 ## API エンドポイント
 
 ### 認証
 - `POST /auth/login` - ログイン
-- `POST /auth/signup` - ユーザー登録
 
 ### ユーザー
-- `GET /user` - ユーザー情報取得
-- `PUT /user` - ユーザー情報更新
+- `POST /create` - ユーザ登録
+- `POST /getUser` - ユーザー情報取得
+- `PUT /updateUser` - ユーザー情報更新
 
 ### 勤務先
-- `GET /workplace` - 勤務先一覧取得
-- `POST /workplace` - 勤務先作成
-- `PUT /workplace/:id` - 勤務先更新
-- `DELETE /workplace/:id` - 勤務先削除
+- `POST /create` - 勤務先作成
+- `GET /getWorkplace/:userId` - 勤務先一覧取得
+- `GET /getWorkplaceWage/:workplaceId` - 勤務先の時給取得
+- `PUT /updateWorkplace/:workplaceId` - 勤務先更新
+- `DELETE /deleteWorkplace/:userId/:workplaceId` - 勤務先削除
 
-### イベント
-- `GET /event` - イベント一覧取得
-- `POST /event` - イベント作成
-- `PUT /event/:id` - イベント更新
-- `DELETE /event/:id` - イベント削除
+### 予定
+- `POST /create` - 予定作成
+- `GET /getEvents/:userId` - 予定一覧取得
+- `DELETE /deleteEvent/:userId/:id` - 予定削除
 
-### イベントラベル
-- `GET /event-label` - ラベル一覧取得
-- `POST /event-label` - ラベル作成
-- `PUT /event-label/:id` - ラベル更新
-- `DELETE /event-label/:id` - ラベル削除
+### 予定ラベル
+- `POST /createLabel` - ラベル作成
+- `GET /getLabels/:userId` - ラベル一覧取得
+- `PUT /updateLabel/:userId/:labelId` - ラベル更新
+- `DELETE /deleteLabel/:userId/:labelId` - ラベル削除
 
 ## テスト
 
@@ -259,7 +260,7 @@ npm run test           # テスト実行（設定されている場合）
 
 ### 本番環境用 Docker Compose
 ```bash
-docker-compose -f docker-compose.prod.yml up -d
+docker compose -f docker-compose.prod.yml up -d
 ```
 
 ## コントリビューション
