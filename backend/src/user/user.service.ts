@@ -4,7 +4,7 @@ import { CreateUserDto } from './dto/create_user.dto';
 import { GetUserDto } from './dto/get_user.dto';
 import { UpdateUserDto } from './dto/update_user.dto';
 import * as bcrypt from 'bcrypt';
-import { Prisma } from '@prisma/client';
+import { Prisma, PrismaClientKnownRequestError } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -40,7 +40,7 @@ export class UserService {
     } catch (error) {
       // Prismaのエラーコードをチェック (P2002はユニーク制約違反)
       if (
-        error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002'
+        error instanceof PrismaClientKnownRequestError && error.code === 'P2002'
       ) {
         // emailが既に存在する場合
         throw new ConflictException('メールアドレスは既に使われてます');
