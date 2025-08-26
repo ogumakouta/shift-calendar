@@ -3,7 +3,7 @@ version: '3.8'
 services:
   # Nginx リバースプロキシ
   nginx:
-    image: nginx:latest
+    image: nginx:alpine
     ports:
       # 外部からの80番ポートをすべて受け付ける
       - "80:80"
