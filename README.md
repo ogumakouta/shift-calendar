@@ -100,13 +100,13 @@ JWT_SECRET="your-jwt-secret"
 ```
 
 #### フロントエンド (frontend/.env)
-```
+```env
 # APIリクエストのエンドポイント
 NEXT_PUBLIC_API_URL = http://localhost:8000
 ```
 
 #### データベース (./env)
-```
+```env
 MYSQL_ROOT_PASSWORD="root-password"
 MYSQL_DATABASE="database-name"
 MYSQL_USER="user"
