@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Payment_month {
+  current
+  next
+  after_next
+}
+
+// ユーザーモデル
+model User {
+  id            Int          @id @default(autoincrement())
+  name          String
+  email         String       @unique
+  birthday      DateTime?    @db.Date
+  password_hash String
+  created_at    DateTime     @default(now())
+  updated_at    DateTime     @updatedAt
+  workplaces    Workplace[]
+  events        Event[]
+  event_labels  EventLabel[]
+
+  @@map("users")
+}
+
+model Workplace {
+  id            Int           @id @default(autoincrement())
+  user_id       Int
+  name          String
+  location      String?       @db.Text
+  closing_day   Int
+  payment_month Payment_month @default(current)
+  payment_day   Int
+  hourly_wage   Int
+  created_at    DateTime      @default(now())
+  updated_at    DateTime      @updatedAt
+  user          User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  events        Event[]
+
+  @@map("workplaces")
+}
+
+model Event {
+  id             Int        @id @default(autoincrement())
+  user_id        Int
+  event_label_id Int
+  title          String
+  workplace_id   Int?
+  is_allday      Boolean    @default(false)
+  start_time     DateTime
+  finish_time    DateTime
+  break_minutes  Int?
+  location       String?    @db.Text
+  memo           String?    @db.Text
+  created_at     DateTime   @default(now())
+  updated_at     DateTime   @updatedAt
+  user           User       @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  event_label   EventLabel @relation(fields: [event_label_id], references: [id], onDelete: Cascade)
+  workplace      Workplace? @relation(fields: [workplace_id], references: [id], onDelete: SetNull)
+
+  @@map("events")
+}
+
+model EventLabel {
+  id      Int     @id @default(autoincrement())
+  user_id Int?
+  name    String  @db.Text
+  common  Boolean @default(false)
+  user    User?   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  events        Event[]
+
+  @@map("event_labels")
+}

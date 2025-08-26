@@ -1,0 +1,88 @@
+@charset "utf-8";
+
+.react-calendar {
+    max-width: 1335px;
+    width: 100%;
+    border: none;
+    border-radius: 15px;
+    background-color: #fbfbfb;
+}
+
+.react-calendar
+
+.react-calendar__tile {
+    height: 117px;
+    outline: 1px solid #d2d2d2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+/* 土曜日だけ青色にする */
+.react-calendar .react-calendar__month-view__days__day--weekend:nth-child(7n-1) {
+    color: #00F;
+}
+
+  /* active時の文字の色（選択後の日付の色） */
+.react-calendar__tile--active {
+    color: white !important;
+}
+
+  /* 土曜を全部青色にしても今月以外は灰色にする */
+.react-calendar .react-calendar__month-view__days__day--neighboringMonth {
+    color: #757575 !important;
+}
+
+.event-marker {
+    width: 8px;
+    height: 8px;
+    background-color: #4ab2e7; /* Tailwindのred-400のような色 */
+    border-radius: 50%;
+    margin: auto; /* 中央寄せ */
+}
+
+/*ダークモード時のスタイル*/
+.dark-mode .react-calendar {
+    max-width: 1335px;
+    width: 100%;
+    border: none;
+    border-radius: 15px;
+    background-color: #505050;
+}
+
+.dark-mode .react-calendar__navigation button:enabled:hover,
+.dark-mode .react-calendar__navigation button:enabled:focus {
+    background-color: #7c7c7c;
+}
+
+.dark-mode .react-calendar__month-view__days__day--weekend {
+    color: #cd3838;
+}
+
+.dark-mode .react-calendar .react-calendar__month-view__days__day--weekend:nth-child(7n-1) {
+    color: #1D1DFF;
+}
+
+.dark-mode .react-calendar__tile:enabled:hover {
+    background: #898989;
+} 
+
+.dark-mode .react-calendar__tile--now {
+    background: #8b8b38;
+}
+
+.dark-mode .react-calendar__tile--now:enabled:hover,
+.dark-mode .react-calendar__tile--now:enabled:focus {
+    background: #a6a643;
+}
+
+.dark-mode .react-calendar__tile--active {
+    background: #006edc;
+    color: white;
+}
+
+.dark-mode .react-calendar__tile--active:enabled:hover,
+.dark-mode .react-calendar__tile--active:enabled:focus {
+    background: #1087ff;
+}
