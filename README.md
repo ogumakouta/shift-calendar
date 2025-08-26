@@ -84,6 +84,34 @@ cp backend/.env.sample backend/.env
 cp frontend/.env.sample frontend/.env
 # 自分の環境に合わせて値を編集
 ```
+#### バックエンド (backend/.env)
+```env
+# NestJS/Prisma接続用URL
+DATABASE_URL="mysql://user:password@localhost:3306/database"
+
+# NestJSがリッスンするポート(フロントエンドが3000番を使うから3000以外を指定)
+BACKEND_PORT = 8000
+
+# APIリクエストを許可するフロントエンドのURL
+CORS_ORIGIN = http://localhost:3000
+
+# JWTの秘密鍵(予測されない文字列を入れる)
+JWT_SECRET="your-jwt-secret"
+```
+
+#### フロントエンド (frontend/.env)
+```
+# APIリクエストのエンドポイント
+NEXT_PUBLIC_API_URL = http://localhost:8000
+```
+
+#### データベース (./env)
+```
+MYSQL_ROOT_PASSWORD="root-password"
+MYSQL_DATABASE="database-name"
+MYSQL_USER="user"
+MYSQL_PASSWORD="password"
+```
 
 ### 3. Docker Compose での起動
 ```bash
@@ -146,37 +174,6 @@ npx prisma studio
 - ユーザー → 予定ラベル（1対多）
 - 予定 → 予定ラベル（多対1）
 - 予定 → 勤務先（多対1）
-
-## 環境変数 （例）
-
-### バックエンド (backend/.env)
-```env
-# NestJS/Prisma接続用URL
-DATABASE_URL="mysql://user:password@localhost:3306/database"
-
-# NestJSがリッスンするポート(フロントエンドが3000番を使うから3000以外を指定)
-BACKEND_PORT = 8000
-
-# APIリクエストを許可するフロントエンドのURL
-CORS_ORIGIN = http://localhost:3000
-
-# JWTの秘密鍵(予測されない文字列を入れる)
-JWT_SECRET="your-jwt-secret"
-```
-
-### フロントエンド (frontend/.env)
-```
-# APIリクエストのエンドポイント
-NEXT_PUBLIC_API_URL = http://localhost:8000
-```
-
-### データベース (./env)
-```
-MYSQL_ROOT_PASSWORD="root-password"
-MYSQL_DATABASE="database-name"
-MYSQL_USER="user"
-MYSQL_PASSWORD="password"
-```
 
 ## 使用可能なスクリプト
 
