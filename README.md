@@ -1,13 +1,13 @@
 # シフトカレンダー
 
-シフト管理とプライベートの予定管理を統合したWebアプリケーションです。ユーザーは勤務先の設定、シフトの登録、イベントの管理を行うことができます。
+シフト管理とプライベートの予定管理を統合したWebアプリケーションです。ユーザーは勤務先の設定、シフトの登録、予定の管理を行うことができます。
 
-## 機能
+## 機能・画面一覧
 
 - **ユーザー管理**: アカウント作成、ログイン、プロフィール設定
 - **勤務先管理**: 勤務先の登録、編集、削除
 - **シフト管理**: カレンダー形式でのシフト登録・編集・削除
-- **イベント管理**: イベントラベル付きでのスケジュール管理
+- **予定管理**: 予定ラベル付きでのスケジュール管理
 - **給与計算**: 時給ベースでの月次給与計算
 
 ## 技術スタック
@@ -39,8 +39,8 @@ blog_app/
 │   │   ├── auth/          # 認証関連
 │   │   ├── user/          # ユーザー管理
 │   │   ├── workplace/     # 勤務先管理
-│   │   ├── event/         # イベント管理
-│   │   ├── event-label/   # イベントラベル管理
+│   │   ├── event/         # 予定管理
+│   │   ├── event-label/   # 予定ラベル管理
 │   │   └── prisma/        # データベース接続
 │   ├── prisma/            # データベーススキーマ
 │   └── Dockerfile
@@ -66,9 +66,10 @@ cd blog_app
 
 ### 2. 環境変数の設定
 ```bash
-# バックエンド用
-cp backend/.env.example backend/.env
-# 必要に応じて値を編集
+cp .env.sample .env
+cp backend/.env.sample backend/.env
+cp frontend/.env.sample frontend/.env
+# 自分の環境に合わせて値を編集
 ```
 
 ### 3. Docker Compose での起動
@@ -113,6 +114,9 @@ npx prisma studio
 
 ## データベーススキーマ
 
+### ER図
+![ER図](./docs/entity-relationship-diagram.png)
+
 ### 主要なテーブル
 - **users**: ユーザー情報
 - **workplaces**: 勤務先情報
@@ -121,12 +125,43 @@ npx prisma studio
 
 ### リレーション
 - ユーザー → 勤務先（1対多）
-- ユーザー → イベント（1対多）
-- ユーザー → イベントラベル（1対多）
-- イベント → イベントラベル（多対1）
-- イベント → 勤務先（多対1）
+- ユーザー → 予定（1対多）
+- ユーザー → 予定ラベル（1対多）
+- 予定 → 予定ラベル（多対1）
+- 予定 → 勤務先（多対1）
 
-## 🔧 使用可能なスクリプト
+## 環境変数 （例）
+
+### バックエンド (backend/.env)
+```env
+# NestJS/Prisma接続用URL
+DATABASE_URL="mysql://user:password@localhost:3306/database"
+
+# NestJSがリッスンするポート(フロントエンドが3000番を使うから3000以外を指定)
+BACKEND_PORT = 8000
+
+# APIリクエストを許可するフロントエンドのURL
+CORS_ORIGIN = http://localhost:3000
+
+# JWTの秘密鍵(予測されない文字列を入れる)
+JWT_SECRET="your-jwt-secret"
+```
+
+### フロントエンド (frontend/.env)
+```
+# APIリクエストのエンドポイント
+NEXT_PUBLIC_API_URL = http://localhost:8000
+```
+
+### データベース (./env)
+```
+MYSQL_ROOT_PASSWORD="root-password"
+MYSQL_DATABASE="database-name"
+MYSQL_USER="user"
+MYSQL_PASSWORD="password"
+```
+
+## 使用可能なスクリプト
 
 ### バックエンド
 ```bash
@@ -206,18 +241,6 @@ cd frontend
 npm run test           # テスト実行（設定されている場合）
 ```
 
-## 環境変数
-
-### バックエンド (.env)
-```env
-DATABASE_URL="mysql://user:password@localhost:3306/database"
-JWT_SECRET="your-jwt-secret"
-MYSQL_ROOT_PASSWORD="root-password"
-MYSQL_DATABASE="database-name"
-MYSQL_USER="user"
-MYSQL_PASSWORD="password"
-```
-
 ## デプロイ
 
 ### 本番環境用 Docker Compose
@@ -233,14 +256,6 @@ docker-compose -f docker-compose.prod.yml up -d
 4. ブランチにプッシュ (`git push origin feature/amazing-feature`)
 5. プルリクエストを作成
 
-## ライセンス
-
-このプロジェクトは MIT ライセンスの下で公開されています。
-
 ## サポート
 
 問題が発生した場合や質問がある場合は、Issueを作成してください。
-
----
-
-**注意**: このアプリケーションは開発・学習目的で作成されています。本格的な運用を行う場合は、セキュリティ、パフォーマンス、スケーラビリティの観点から追加の検討が必要です。
