@@ -96,11 +96,15 @@ docker-compose up -d
 - バックエンド: http://localhost:8000
 - データベース: localhost:3308
 
-### 4. データベースの初期化
+### 4. データベースの初期化・準備
 ```bash
 # バックエンドコンテナ内で実行
 docker-compose exec backend npx prisma migrate dev
 docker-compose exec backend npx prisma generate
+```
+```sql
+# event_labelsテーブルにデータを追加
+insert into event_labels (name, common) values ('予定', true), ('バイト', true);
 ```
 
 ## 🛠️ 開発
