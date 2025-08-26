@@ -28,7 +28,6 @@
 
 ### バックエンド
 - **フレームワーク**: NestJS (Node.js)
-- **データベース**: MySQL 8.0
 - **ORM**: Prisma
 - **認証**: JWT + bcrypt
 - **言語**: TypeScript
