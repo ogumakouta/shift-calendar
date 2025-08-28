@@ -2,6 +2,8 @@
 import { useState, useEffect } from 'react';
 import { jwtDecode } from "jwt-decode";
 import type { Value } from "react-calendar/dist/cjs/shared/types";
+import { Listbox } from '@headlessui/react'
+import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 
 // 親コンポーネントから受け取るpropsの型定義
 type Props = {
@@ -27,6 +29,10 @@ export default function CreateEvent({ onEventCreated, date }: Props) {
 
   // apiから取得した選択肢を配列で管理
   const [labels, setLabels] = useState([]);
+
+  // 選択された予定ラベルを探して表示
+  const selectedLabel = labels.find(label => label.name === eventType);
+  const displayWorkplase = workplace.find(wp => wp.id === selectedWorkplace);
 
   // フォームの値をクリアする関数
   const clearForm = () => {
@@ -93,8 +99,7 @@ export default function CreateEvent({ onEventCreated, date }: Props) {
     fetchData();
   }, [user_id]);
 
-  const handleEventTypeChange = (e) => {
-    const newType = e.target.value;
+  const handleEventTypeChange = (newType) => {
     setEventType(newType);
 
     // もし新しい種類が「バイト」なら、「終日」チェックを外す
@@ -186,6 +191,7 @@ export default function CreateEvent({ onEventCreated, date }: Props) {
   // 予定の種類がバイト先だったらタイトルにバイト先名を入れる
   useEffect(() => {
     if (eventType === 'バイト' && selectedWorkplace) {
+      console.log(selectedWorkplace);
       const findWorkplace = workplace.find((wp) => wp.id === parseInt(selectedWorkplace, 10))
       console.log(findWorkplace);
       if (findWorkplace) {
@@ -200,7 +206,7 @@ export default function CreateEvent({ onEventCreated, date }: Props) {
     e.preventDefault();
     setMessage('');
 
-    if (!title || !startTime || !finishTime) {
+    if (!eventType || !title || !startTime || !finishTime) {
       setMessage('必須項目を全て入力してください');
       return;
     } else if (eventType === 'バイト' && !selectedWorkplace) {
@@ -272,17 +278,54 @@ export default function CreateEvent({ onEventCreated, date }: Props) {
         <input type="hidden" id='user_id' value={user_id} />
         <div className="flex flex-col">
           <label htmlFor="eventType" className="font-semibold text-left">種類：</label>
-          <select
-            id="eventType"
-            value={eventType}
-            onChange={handleEventTypeChange}
-            className="p-2 border rounded-md"
-          >
-            <option value=""></option>
-            {labels.map((label) => (
-              <option key={label.id} value={label.name}>{label.name}</option>
-            ))}
-          </select>
+          <Listbox value={eventType} onChange={handleEventTypeChange}>
+            <div className="relative w-full">
+              {/* ボタン部分 */}
+              <Listbox.Button 
+                className="relative w-full cursor-default rounded-md border p-2 pr-10 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500
+                          bg-[#ededed] dark:bg-[#363636] dark:border-white-500 dark:text-white"
+              >
+                <span className="block truncate">
+                  {/* eventTypeが存在すればその名前を、なければプレースホルダーを表示 */}
+                  {selectedLabel ? selectedLabel.name : <span className="text-gray-400">種類を選択</span>}
+                </span>
+                <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                  <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                </span>
+              </Listbox.Button>
+              
+              {/* オプションリスト部分 */}
+              <Listbox.Options 
+                className="absolute z-10 mt-1 w-full max-h-60 overflow-auto rounded-md py-1 shadow-lg ring-1 ring-black/5 focus:outline-none
+                          bg-[#ededed] dark:bg-[#4e4e4e]"
+              >
+                {labels.map((label) => (
+                  <Listbox.Option
+                    key={label.id}
+                    value={label.name} // onChangeで渡される値
+                    className={({ active }) =>
+                      `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                        active ? 'bg-indigo-500 text-white' : 'text-gray-900 dark:text-gray-200'
+                      }`
+                    }
+                  >
+                    {({ selected }) => (
+                      <>
+                        <span className={`block truncate ${selected ? 'font-semibold' : 'font-normal'}`}>
+                          {label.name}
+                        </span>
+                        {selected && (
+                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-indigo-600 dark:text-indigo-400">
+                            <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                          </span>
+                        )}
+                      </>
+                    )}
+                  </Listbox.Option>
+                ))}
+              </Listbox.Options>
+            </div>
+          </Listbox>
         </div>
         <div className="flex flex-col">
           <label htmlFor="title" className="font-semibold text-left">タイトル：</label>
@@ -298,19 +341,56 @@ export default function CreateEvent({ onEventCreated, date }: Props) {
         </div>
         <div className="flex flex-col">
           <label htmlFor="workplace" className="font-semibold text-left">勤務先：</label>
-          <select
-            id="workplace"
-            value={selectedWorkplace}
-            onChange={(e) => setSelectedWorkplace(e.target.value)}
-            className="p-2 border rounded-md disabled:bg-gray-200 disabled:opacity-70 disabled:cursor-not-allowed
-            dark:disabled:bg-gray-600"
-            disabled={eventType !== 'バイト'}
-          >
-            <option value=""></option>
-            {workplace.map((workplace) => (
-              <option key={workplace.id} value={workplace.id}>{workplace.name}</option>
-            ))}
-          </select>
+          <Listbox value={selectedWorkplace} onChange={setSelectedWorkplace}>
+            <div className="relative w-full">
+              {/* ボタン部分 */}
+              <Listbox.Button 
+                className="relative w-full cursor-default rounded-md border p-2 pr-10 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500
+                          bg-[#ededed] dark:bg-[#363636] dark:border-white-500 dark:text-white
+                          disabled:bg-gray-200 disabled:opacity-70 disabled:cursor-not-allowed dark:disabled:bg-gray-600"
+                disabled={eventType !== 'バイト'}
+              >
+                <span className="block truncate">
+                  {/* displayWorkplaseが存在すればその名前を、なければプレースホルダーを表示 */}
+                  {displayWorkplase ? displayWorkplase.name : <span className="text-gray-400">勤務先を選択</span>}
+                </span>
+                <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                  <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                </span>
+              </Listbox.Button>
+              
+              {/* オプションリスト部分 */}
+              <Listbox.Options 
+                className="absolute z-10 mt-1 w-full max-h-60 overflow-auto rounded-md py-1 shadow-lg ring-1 ring-black/5 focus:outline-none
+                          bg-[#ededed] dark:bg-[#4e4e4e]"
+              >
+                {workplace.map((wp) => (
+                  <Listbox.Option
+                    key={wp.id}
+                    value={wp.id} // onChangeで渡される値
+                    className={({ active }) =>
+                      `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                        active ? 'bg-indigo-500 text-white' : 'text-gray-900 dark:text-gray-200'
+                      }`
+                    }
+                  >
+                    {({ selected }) => (
+                      <>
+                        <span className={`block truncate ${selected ? 'font-semibold' : 'font-normal'}`}>
+                          {wp.name}
+                        </span>
+                        {selected && (
+                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-indigo-600 dark:text-indigo-400">
+                            <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                          </span>
+                        )}
+                      </>
+                    )}
+                  </Listbox.Option>
+                ))}
+              </Listbox.Options>
+            </div>
+          </Listbox>
         </div>
         <div className="flex">
           <label htmlFor="isAllday" className="font-semibold text-left">終日：</label>
@@ -350,20 +430,56 @@ export default function CreateEvent({ onEventCreated, date }: Props) {
         </div>
         <div className="flex flex-col">
           <label htmlFor="breakMinutes" className="font-semibold text-left">休憩時間：</label>
-          <select
-            id="breakMinutes"
-            value={breakMinutes}
-            onChange={(e) => setBreakMinutes(e.target.value)}
-            className="p-2 border rounded-md disabled:bg-gray-200 disabled:opacity-70 disabled:cursor-not-allowed
-            dark:disabled:bg-gray-600"
-            disabled={eventType !== 'バイト'}
-          >
-            {Array.from({ length: 61 }, (_, i) => i).map(minute => (
-              <option key={minute} value={minute}>
-                {minute}
-              </option>
-            ))}
-          </select>
+          <Listbox value={breakMinutes} onChange={setBreakMinutes}>
+            <div className="relative w-full">
+              {/* ボタン部分 */}
+              <Listbox.Button 
+                className="relative w-full cursor-default rounded-md border p-2 pr-10 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500
+                          bg-[#ededed] dark:bg-[#363636] dark:border-white-500 dark:text-white
+                          disabled:bg-gray-200 disabled:opacity-70 disabled:cursor-not-allowed dark:disabled:bg-gray-600"
+                disabled={eventType !== 'バイト'}
+              >
+                <span className="block truncate">
+                  {/* breakMinutesが存在すればその名前を、なければプレースホルダーを表示 */}
+                  {breakMinutes ? breakMinutes : <span className="text-gray-400">休憩時間を選択</span>}
+                </span>
+                <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                  <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                </span>
+              </Listbox.Button>
+              
+              {/* オプションリスト部分 */}
+              <Listbox.Options 
+                className="absolute z-10 mt-1 w-full max-h-60 overflow-auto rounded-md py-1 shadow-lg ring-1 ring-black/5 focus:outline-none
+                          bg-[#ededed] dark:bg-[#4e4e4e]"
+              >
+                {Array.from({ length: 61 }, (_, i) => i).map(minute => (
+                  <Listbox.Option
+                    key={minute}
+                    value={minute} // onChangeで渡される値
+                    className={({ active }) =>
+                      `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                        active ? 'bg-indigo-500 text-white' : 'text-gray-900 dark:text-gray-200'
+                      }`
+                    }
+                  >
+                    {({ selected }) => (
+                      <>
+                        <span className={`block truncate ${selected ? 'font-semibold' : 'font-normal'}`}>
+                          {minute}分
+                        </span>
+                        {selected && (
+                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-indigo-600 dark:text-indigo-400">
+                            <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                          </span>
+                        )}
+                      </>
+                    )}
+                  </Listbox.Option>
+                ))}
+              </Listbox.Options>
+            </div>
+          </Listbox>
         </div>
         <div className="flex flex-col">
           <label htmlFor="location" className="font-semibold text-left">場所（任意）：</label>
