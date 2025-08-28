@@ -27,12 +27,13 @@
 ## 技術スタック
 
 ### バックエンド
+- **言語**: TypeScript
 - **フレームワーク**: NestJS (Node.js)
 - **ORM**: Prisma
 - **認証**: JWT + bcrypt
-- **言語**: TypeScript
 
 ### フロントエンド
+- **言語**: TypeScript
 - **フレームワーク**: Next.js 15
 - **UI**: React 19 + Tailwind CSS
 - **カレンダー**: react-calendar
@@ -88,6 +89,7 @@ cp frontend/.env.sample frontend/.env
 #### バックエンド (backend/.env)
 ```env
 # NestJS/Prisma接続用URL
+# DATABASE_URL="mysql://[ユーザ名]:[パスワード]@[localhost or エンドポイントなど]:[ポート番号]/[データベース名]"
 DATABASE_URL="mysql://user:password@localhost:3306/database"
 
 # NestJSがリッスンするポート(フロントエンドが3000番を使うから3000以外を指定)
