@@ -1,8 +1,8 @@
 @charset "utf-8";
 
 .react-calendar {
-    max-width: 1335px;
-    width: 100%;
+    max-width: 1344px;
+    width: 70%;
     border: none;
     border-radius: 15px;
     background-color: #fbfbfb;
@@ -43,8 +43,11 @@
 }
 
 /*ダークモード時のスタイル*/
+.dark-mode {
+    max-width: 1344px;
+    width: 70%;
+}
 .dark-mode .react-calendar {
-    max-width: 1335px;
     width: 100%;
     border: none;
     border-radius: 15px;

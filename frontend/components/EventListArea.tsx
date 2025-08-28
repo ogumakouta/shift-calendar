@@ -41,7 +41,7 @@ export default function EventListArea({ date, events, onEventCreated }: Props) {
 
 
   return (
-    <div className="bg-[#fbfbfb] ml-5 mr-5 mb-2 rounded-md max-w-[280px] w-full h-[360.5px] text-center p-2 flex flex-col
+    <div className="bg-[#fbfbfb] rounded-md h-[49%] text-center p-2 flex flex-col
     dark:bg-[#505050]">
       <div className='text-xl mb-2'>{selectDate}の予定</div>
       <div className='text-center overflow-y-auto flex-grow'>

@@ -180,7 +180,7 @@ export default function MonthlySalaryArea({ date, events }: Props) {
   }, [events, displayDate]);
 
   return (
-    <div className='bg-[#fbfbfb] ml-5 mr-5 mt-2 rounded-md max-w-[280px] w-full h-[360.5px] text-center p-2 flex flex-col 
+    <div className='bg-[#fbfbfb] rounded-md h-[49%] text-center p-2 flex flex-col 
     dark:bg-[#505050] dark:text-white'>
       <div className='text-xl mb-2 flex items-center justify-center space-x-2'>
         <button 

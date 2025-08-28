@@ -29,8 +29,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-      <div className="flex p-5 justify-between items-center">
-        <Link href='/calendar'><h1 className="header text-5xl mt-5 mb-5">シフトカレンダー</h1></Link>
+      <div className="flex p-5 justify-between items-center max-h-[130px]">
+        <Link href='/calendar'><h1 className="header text-5xl my-5">シフトカレンダー</h1></Link>
         <nav className="flex items-center">
           <SettingPageButton/>
         </nav>

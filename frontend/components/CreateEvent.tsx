@@ -266,11 +266,11 @@ export default function CreateEvent({ onEventCreated, date }: Props) {
 
 
   return (
-    <div>
-    <h1 className='text-center text-3xl'>予定の追加</h1>
+    <div className='h-[96%]'>
+    <h1 className='text-center text-3xl py-5'>予定の追加</h1>
       <form 
         onSubmit={handleSubmit} 
-        className="flex flex-col gap-2 max-w-[265px] mx-auto p-8 pt-0 pb-0 m-0"
+        className="flex flex-col gap-2 max-w-[265px] px-8"
       >
         <div className="text-center text-red-500">
           {message}
