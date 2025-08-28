@@ -246,7 +246,7 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
                           <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
                         </span>
                       </Listbox.Button>
-                      <Listbox.Options className="absolute z-10 mt-1 w-full max-h-60 overflow-auto rounded-md py-1 shadow-lg focus:outline-none dark:bg-[#4e4e4e]">
+                      <Listbox.Options className="bg-[#ededed] absolute z-10 mt-1 w-full max-h-60 overflow-auto rounded-md py-1 shadow-lg focus:outline-none dark:bg-[#4e4e4e]">
                         {dayOptions.map((option) => (
                           <Listbox.Option key={option.value} value={option.value} className={({ active }) => `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? 'bg-indigo-500 text-white' : 'dark:text-gray-200'}`}>
                             {({ selected }) => (
@@ -270,7 +270,7 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
                             <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
                           </span>
                         </Listbox.Button>
-                        <Listbox.Options className="absolute z-10 mt-1 w-full max-h-60 overflow-auto rounded-md py-1 shadow-lg focus:outline-none dark:bg-[#4e4e4e]">
+                        <Listbox.Options className="bg-[#ededed] absolute z-10 mt-1 w-full max-h-60 overflow-auto rounded-md py-1 shadow-lg focus:outline-none dark:bg-[#4e4e4e]">
                           {paymentMonthOptions.map((option) => (
                             <Listbox.Option key={option.value} value={option.value} className={({ active }) => `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? 'bg-indigo-500 text-white' : 'dark:text-gray-200'}`}>
                               {({ selected }) => (
@@ -292,7 +292,7 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
                             <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
                           </span>
                         </Listbox.Button>
-                        <Listbox.Options className="absolute z-10 mt-1 w-full max-h-60 overflow-auto rounded-md py-1 shadow-lg focus:outline-none dark:bg-[#4e4e4e]">
+                        <Listbox.Options className="bg-[#ededed] absolute z-10 mt-1 w-full max-h-60 overflow-auto rounded-md py-1 shadow-lg focus:outline-none dark:bg-[#4e4e4e]">
                           {dayOptions.map((option) => (
                             <Listbox.Option key={option.value} value={option.value} className={({ active }) => `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? 'bg-indigo-500 text-white' : 'dark:text-gray-200'}`}>
                               {({ selected }) => (
@@ -373,7 +373,7 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
                     <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
                   </span>
                 </Listbox.Button>
-                <Listbox.Options className="absolute z-10 mt-1 w-full max-h-60 overflow-auto rounded-md py-1 shadow-lg focus:outline-none dark:bg-[#4e4e4e]">
+                <Listbox.Options className="bg-[#ededed] absolute z-10 mt-1 w-full max-h-60 overflow-auto rounded-md py-1 shadow-lg focus:outline-none dark:bg-[#4e4e4e]">
                   {dayOptions.map((option) => (
                     <Listbox.Option key={option.value} value={option.value} className={({ active }) => `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? 'bg-indigo-500 text-white' : 'dark:text-gray-200'}`}>
                       {({ selected }) => (
@@ -397,7 +397,7 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
                       <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
                     </span>
                   </Listbox.Button>
-                  <Listbox.Options className="absolute z-10 mt-1 w-full max-h-60 overflow-auto rounded-md py-1 shadow-lg focus:outline-none dark:bg-[#4e4e4e]">
+                  <Listbox.Options className="bg-[#ededed] absolute z-10 mt-1 w-full max-h-60 overflow-auto rounded-md py-1 shadow-lg focus:outline-none dark:bg-[#4e4e4e]">
                     {paymentMonthOptions.map((option) => (
                       <Listbox.Option key={option.value} value={option.value} className={({ active }) => `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? 'bg-indigo-500 text-white' : 'dark:text-gray-200'}`}>
                         {({ selected }) => (
@@ -420,7 +420,7 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
                       <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
                     </span>
                   </Listbox.Button>
-                  <Listbox.Options className="absolute z-10 mt-1 w-full max-h-60 overflow-auto rounded-md py-1 shadow-lg focus:outline-none dark:bg-[#4e4e4e]">
+                  <Listbox.Options className="bg-[#ededed] absolute z-10 mt-1 w-full max-h-60 overflow-auto rounded-md py-1 shadow-lg focus:outline-none dark:bg-[#4e4e4e]">
                     {dayOptions.map((option) => (
                       <Listbox.Option key={option.value} value={option.value} className={({ active }) => `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? 'bg-indigo-500 text-white' : 'dark:text-gray-200'}`}>
                         {({ selected }) => (
