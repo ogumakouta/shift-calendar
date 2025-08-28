@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import type { Value } from "react-calendar/dist/cjs/shared/types";
+import { Listbox } from '@headlessui/react';
+import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 
 // 親コンポーネントから受け取るpropsの型定義
 type Props = {
@@ -19,6 +21,19 @@ type Workplace = {
   payment_day: number | string;
   hourly_wage: number | string;
 };
+
+// 締め日・支払日の選択肢
+const dayOptions = [
+  ...Array.from({ length: 30 }, (_, i) => ({ value: i + 1, label: `${i + 1}日` })),
+  { value: 99, label: '月末' }
+];
+
+// 支払月の選択肢
+const paymentMonthOptions = [
+  { value: 'current', label: '当月' },
+  { value: 'next', label: '翌月' },
+  { value: 'after_next', label: '翌々月' },
+];
 
 // APIのエンドポイント
 const apiUrl = process.env.NEXT_PUBLIC_API_URL
@@ -81,10 +96,10 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
   }, [user_id])
 
   // map内の各inputを個別に編集するためのハンドラ
-  const handleWorkplaceNameChange = (id: number | string, newName: string, newLocation: string, newClosing_day: number | string, newPayment_month: number | string, newPayment_day: number | string, newHourly_wage: number | string,) => {
-    setWorkplaces(prevWorkplaces => 
-      prevWorkplaces.map(workplace => 
-        workplace.id === id ? { ...workplace, name: newName, location: newLocation, closing_day: newClosing_day,payment_month: newPayment_month, payment_day: newPayment_day, hourly_wage: newHourly_wage } : workplace
+  const handleWorkplaceUpdate = (id: number | string, updatedField: Partial<Workplace>) => {
+    setWorkplaces(prevWorkplaces =>
+      prevWorkplaces.map(workplace =>
+        workplace.id === id ? { ...workplace, ...updatedField } : workplace
       )
     );
   };
@@ -149,7 +164,7 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
     e.preventDefault();
 
     // 全ての項目が埋まってなかったら処理を中断
-    if (!newWorkplaceName.trim() || !newWorkplaceLocation.trim() || !newWorkplaceClosing_day.trim() || !newWorkplacePayment_month.trim() || !newWorkplacePayment_day.trim() || !newWorkplaceHourly_wage.trim()) {
+    if (!newWorkplaceName.trim() || !newWorkplaceLocation.trim() || !newWorkplaceClosing_day || !newWorkplacePayment_month || !newWorkplacePayment_day || !newWorkplaceHourly_wage.trim()) {
       setNewPlaceMessage('全ての項目を入力してください');
       return;
     }
@@ -211,7 +226,7 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
                     type="text"
                     id={`name-${workplace.id}`}
                     value={workplace.name}
-                    onChange={(e) => handleWorkplaceNameChange(workplace.id, e.target.value, workplace.location, workplace.closing_day, workplace.payment_month, workplace.payment_day, workplace.hourly_wage)}
+                    onChange={(e) => handleWorkplaceUpdate(workplace.id, { name: e.target.value })}
                     className="p-2 border rounded-md"
                   />
                   <label htmlFor={`location-${workplace.id}`} className="font-semibold mt-3">勤務先住所:</label>
@@ -219,55 +234,79 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
                     type="text"
                     id={`location-${workplace.id}`}
                     value={workplace.location || ''}
-                    onChange={(e) => handleWorkplaceNameChange(workplace.id, workplace.name, e.target.value, workplace.closing_day, workplace.payment_month, workplace.payment_day, workplace.hourly_wage)}
+                    onChange={(e) => handleWorkplaceUpdate(workplace.id, { location: e.target.value })}
                     className="p-2 border rounded-md"
                   />
                   <label htmlFor={`closing_day-${workplace.id}`} className="font-semibold mt-3">締め日:</label>
-                  <select
-                    id={`closing_day-${workplace.id}`}
-                    value={workplace.closing_day}
-                    onChange={(e) => handleWorkplaceNameChange(workplace.id, workplace.name, workplace.location, e.target.value, workplace.payment_month, workplace.payment_day, workplace.hourly_wage)}
-                    className="p-2 border rounded-md"
-                  >
-                    {Array.from({ length: 30 }, (_, i) => i + 1).map(day => (
-                      <option key={day} value={day}>
-                        {day}日
-                      </option>
-                    ))}
-                    <option value="99">月末</option>
-                  </select>
+                  <Listbox value={workplace.closing_day} onChange={(newValue) => handleWorkplaceUpdate(workplace.id, { closing_day: newValue })}>
+                    <div className="relative">
+                      <Listbox.Button className="relative w-full cursor-default rounded-md border p-2 pr-10 text-left shadow-sm focus:outline-none dark:bg-[#363636] dark:text-white">
+                        <span className="block truncate">{dayOptions.find(opt => opt.value == workplace.closing_day)?.label}</span>
+                        <ChevronUpDownIcon className="pointer-events-none absolute inset-y-0 right-0 h-5 w-5 text-gray-400" aria-hidden="true" />
+                      </Listbox.Button>
+                      <Listbox.Options className="absolute z-10 mt-1 w-full max-h-60 overflow-auto rounded-md py-1 shadow-lg focus:outline-none dark:bg-[#4e4e4e]">
+                        {dayOptions.map((option) => (
+                          <Listbox.Option key={option.value} value={option.value} className={({ active }) => `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? 'bg-indigo-500 text-white' : 'dark:text-gray-200'}`}>
+                            {({ selected }) => (
+                              <>
+                                <span className={`block truncate ${selected ? 'font-semibold' : 'font-normal'}`}>{option.label}</span>
+                                {selected && <CheckIcon className="absolute inset-y-0 left-0 h-5 w-5 pl-3" aria-hidden="true" />}
+                              </>
+                            )}
+                          </Listbox.Option>
+                        ))}
+                      </Listbox.Options>
+                    </div>
+                  </Listbox>
                   <label htmlFor={`payment_day-${workplace.id}`} className="font-semibold mt-3">給料日:</label>
                   <div className="flex gap-2">
-                    <select 
-                      id={`payment_month-${workplace.id}`}
-                      value={workplace.payment_month}
-                      onChange={(e) => handleWorkplaceNameChange(workplace.id, workplace.name, workplace.location, workplace.closing_day, e.target.value, workplace.payment_day, workplace.hourly_wage)}
-                      className="p-2 border rounded-md w-full"
-                    >
-                      <option value="current">当月</option>
-                      <option value="next">翌月</option>
-                      <option value="after_next">翌々月</option>
-                    </select>
-                    <select
-                      id={`payment_day-${workplace.id}`}
-                      value={workplace.payment_day}
-                      onChange={(e) => handleWorkplaceNameChange(workplace.id, workplace.name, workplace.location, workplace.closing_day, workplace.payment_month, e.target.value, workplace.hourly_wage)}
-                      className="p-2 border rounded-md w-full"
-                    >
-                      {Array.from({ length: 30 }, (_, i) => i + 1).map(day => (
-                        <option key={day} value={day}>
-                          {day}日
-                        </option>
-                      ))}
-                      <option value="99">月末</option>
-                    </select>
+                    <Listbox value={workplace.payment_month} onChange={(newValue) => handleWorkplaceUpdate(workplace.id, { payment_month: newValue })}>
+                      <div className="relative w-full">
+                        <Listbox.Button className="relative w-full cursor-default rounded-md border p-2 pr-10 text-left shadow-sm focus:outline-none dark:bg-[#363636] dark:text-white">
+                          <span className="block truncate">{paymentMonthOptions.find(opt => opt.value === workplace.payment_month)?.label}</span>
+                            <ChevronUpDownIcon className="pointer-events-none absolute inset-y-0 right-0 h-5 w-5 text-gray-400" aria-hidden="true" />
+                        </Listbox.Button>
+                        <Listbox.Options className="absolute z-10 mt-1 w-full max-h-60 overflow-auto rounded-md py-1 shadow-lg focus:outline-none dark:bg-[#4e4e4e]">
+                          {paymentMonthOptions.map((option) => (
+                            <Listbox.Option key={option.value} value={option.value} className={({ active }) => `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? 'bg-indigo-500 text-white' : 'dark:text-gray-200'}`}>
+                              {({ selected }) => (
+                                <>
+                                  <span className={`block truncate ${selected ? 'font-semibold' : 'font-normal'}`}>{option.label}</span>
+                                  {selected && <CheckIcon className="absolute inset-y-0 left-0 h-5 w-5 pl-3" aria-hidden="true" />}
+                                </>
+                              )}
+                            </Listbox.Option>
+                          ))}
+                        </Listbox.Options>
+                      </div>
+                    </Listbox>
+                    <Listbox value={workplace.payment_day} onChange={(newValue) => handleWorkplaceUpdate(workplace.id, { payment_day: newValue })}>
+                      <div className="relative w-full">
+                        <Listbox.Button className="relative w-full cursor-default rounded-md border p-2 pr-10 text-left shadow-sm focus:outline-none dark:bg-[#363636] dark:text-white">
+                          <span className="block truncate">{dayOptions.find(opt => opt.value == workplace.payment_day)?.label}</span>
+                          <ChevronUpDownIcon className="pointer-events-none absolute inset-y-0 right-0 h-5 w-5 text-gray-400" aria-hidden="true" />
+                        </Listbox.Button>
+                        <Listbox.Options className="absolute z-10 mt-1 w-full max-h-60 overflow-auto rounded-md py-1 shadow-lg focus:outline-none dark:bg-[#4e4e4e]">
+                          {dayOptions.map((option) => (
+                            <Listbox.Option key={option.value} value={option.value} className={({ active }) => `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? 'bg-indigo-500 text-white' : 'dark:text-gray-200'}`}>
+                              {({ selected }) => (
+                                <>
+                                  <span className={`block truncate ${selected ? 'font-semibold' : 'font-normal'}`}>{option.label}</span>
+                                  {selected && <CheckIcon className="absolute inset-y-0 left-0 h-5 w-5 pl-3" aria-hidden="true" />}
+                                </>
+                              )}
+                            </Listbox.Option>
+                          ))}
+                        </Listbox.Options>
+                      </div>
+                    </Listbox>
                   </div>
                   <label htmlFor={`hourly_wage-${workplace.id}`} className="font-semibold mt-3">時給:</label>
                   <input
                     type="number"
                     id={`hourly_wage-${workplace.id}`}
                     value={workplace.hourly_wage}
-                    onChange={(e) => handleWorkplaceNameChange(workplace.id, workplace.name, workplace.location, workplace.closing_day, workplace.payment_month, workplace.payment_day, e.target.value)}
+                    onChange={(e) => handleWorkplaceUpdate(workplace.id, { hourly_wage: e.target.value })}
                     className="p-2 border rounded-md"
                   />
                   <button 
@@ -320,47 +359,69 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
               className="p-2 border rounded-md"
             />
             <label htmlFor={'new-closing_day'} className="font-semibold mt-3">締め日:</label>
-            <select
-              id={'new-closing_day'}
-              value={newWorkplaceClosing_day}
-              onChange={(e) => setNewWorkplaceClosing_day(e.target.value)}
-              className="p-2 border rounded-md"
-            >
-              <option></option>
-              {Array.from({ length: 30 }, (_, i) => i + 1).map(day => (
-                <option key={day} value={day}>
-                  {day}日
-                </option>
-              ))}
-              <option value="99">月末</option>
-            </select>
+            <Listbox value={newWorkplaceClosing_day} onChange={setNewWorkplaceClosing_day}>
+              <div className="relative">
+                <Listbox.Button className="relative w-full cursor-default rounded-md border p-2 pr-10 text-left shadow-sm focus:outline-none dark:bg-[#363636] dark:text-white">
+                  <span className="block truncate">{dayOptions.find(opt => opt.value == newWorkplaceClosing_day)?.label || <span className="text-gray-400">選択してください</span>}</span>
+                    <ChevronUpDownIcon className="pointer-events-none absolute inset-y-0 right-0 h-5 w-5 text-gray-400" aria-hidden="true" />
+                </Listbox.Button>
+                <Listbox.Options className="absolute z-10 mt-1 w-full max-h-60 overflow-auto rounded-md py-1 shadow-lg focus:outline-none dark:bg-[#4e4e4e]">
+                  {dayOptions.map((option) => (
+                    <Listbox.Option key={option.value} value={option.value} className={({ active }) => `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? 'bg-indigo-500 text-white' : 'dark:text-gray-200'}`}>
+                      {({ selected }) => (
+                        <>
+                          <span className={`block truncate ${selected ? 'font-semibold' : 'font-normal'}`}>{option.label}</span>
+                          {selected && <CheckIcon className="absolute inset-y-0 left-0 h-5 w-5 pl-3" aria-hidden="true" />}
+                        </>
+                      )}
+                    </Listbox.Option>
+                  ))}
+                </Listbox.Options>
+              </div>
+            </Listbox>
             <label htmlFor={'new-payment_day'} className="font-semibold mt-3">給料日:</label>
             <div className="flex gap-2">
-              <select 
-                id={'new-payment_month'}
-                value={newWorkplacePayment_month}
-                onChange={(e) => setNewWorkplacePayment_month(e.target.value)}
-                className="p-2 border rounded-md w-full"
-              >
-                <option></option>
-                <option value="current">当月</option>
-                <option value="next">翌月</option>
-                <option value="after_next">翌々月</option>
-              </select>
-              <select
-                id={'new-payment_day'}
-                value={newWorkplacePayment_day}
-                onChange={(e) => setNewWorkplacePayment_day(e.target.value)}
-                className="p-2 border rounded-md w-full"
-              >
-                <option></option>
-                {Array.from({ length: 30 }, (_, i) => i + 1).map(day => (
-                  <option key={day} value={day}>
-                    {day}日
-                  </option>
-                ))}
-                <option value="99">月末</option>
-              </select>
+              <Listbox value={newWorkplacePayment_month} onChange={setNewWorkplacePayment_month}>
+                <div className="relative w-full">
+                  <Listbox.Button className="relative w-full cursor-default rounded-md border p-2 pr-10 text-left shadow-sm focus:outline-none dark:bg-[#363636] dark:text-white">
+                    <span className="block truncate">{paymentMonthOptions.find(opt => opt.value === newWorkplacePayment_month)?.label || <span className="text-gray-400">選択</span>}</span>
+                      <ChevronUpDownIcon className="pointer-events-none absolute inset-y-0 right-0 h-5 w-5 text-gray-400" aria-hidden="true" />
+                  </Listbox.Button>
+                  <Listbox.Options className="absolute z-10 mt-1 w-full max-h-60 overflow-auto rounded-md py-1 shadow-lg focus:outline-none dark:bg-[#4e4e4e]">
+                    {paymentMonthOptions.map((option) => (
+                      <Listbox.Option key={option.value} value={option.value} className={({ active }) => `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? 'bg-indigo-500 text-white' : 'dark:text-gray-200'}`}>
+                        {({ selected }) => (
+                          <>
+                            <span className={`block truncate ${selected ? 'font-semibold' : 'font-normal'}`}>{option.label}</span>
+                            {selected && <CheckIcon className="absolute inset-y-0 left-0 h-5 w-5 pl-3" aria-hidden="true" />}
+                          </>
+                        )}
+                      </Listbox.Option>
+                    ))}
+                  </Listbox.Options>
+                </div>
+              </Listbox>
+
+              <Listbox value={newWorkplacePayment_day} onChange={setNewWorkplacePayment_day}>
+                <div className="relative w-full">
+                  <Listbox.Button className="relative w-full cursor-default rounded-md border p-2 pr-10 text-left shadow-sm focus:outline-none dark:bg-[#363636] dark:text-white">
+                    <span className="block truncate">{dayOptions.find(opt => opt.value == newWorkplacePayment_day)?.label || <span className="text-gray-400">選択</span>}</span>
+                      <ChevronUpDownIcon className="pointer-events-none absolute inset-y-0 right-0 h-5 w-5 text-gray-400" aria-hidden="true" />
+                  </Listbox.Button>
+                  <Listbox.Options className="absolute z-10 mt-1 w-full max-h-60 overflow-auto rounded-md py-1 shadow-lg focus:outline-none dark:bg-[#4e4e4e]">
+                    {dayOptions.map((option) => (
+                      <Listbox.Option key={option.value} value={option.value} className={({ active }) => `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? 'bg-indigo-500 text-white' : 'dark:text-gray-200'}`}>
+                        {({ selected }) => (
+                          <>
+                            <span className={`block truncate ${selected ? 'font-semibold' : 'font-normal'}`}>{option.label}</span>
+                            {selected && <CheckIcon className="absolute inset-y-0 left-0 h-5 w-5 pl-3" aria-hidden="true" />}
+                          </>
+                        )}
+                      </Listbox.Option>
+                    ))}
+                  </Listbox.Options>
+                </div>
+              </Listbox>
             </div>
             <label htmlFor={'new-hourly_wage'} className="font-semibold mt-3">時給:</label>
             <input
