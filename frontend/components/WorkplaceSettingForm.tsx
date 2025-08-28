@@ -242,7 +242,9 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
                     <div className="relative">
                       <Listbox.Button className="relative w-full cursor-default rounded-md border p-2 pr-10 text-left shadow-sm focus:outline-none dark:bg-[#363636] dark:text-white">
                         <span className="block truncate">{dayOptions.find(opt => opt.value == workplace.closing_day)?.label}</span>
-                        <ChevronUpDownIcon className="pointer-events-none absolute inset-y-0 right-0 h-5 w-5 text-gray-400" aria-hidden="true" />
+                        <span className="pointer-events-none absolute inset-y-0 right-0 flex h-full w-10 items-center justify-center">
+                          <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                        </span>
                       </Listbox.Button>
                       <Listbox.Options className="absolute z-10 mt-1 w-full max-h-60 overflow-auto rounded-md py-1 shadow-lg focus:outline-none dark:bg-[#4e4e4e]">
                         {dayOptions.map((option) => (
@@ -264,7 +266,9 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
                       <div className="relative w-full">
                         <Listbox.Button className="relative w-full cursor-default rounded-md border p-2 pr-10 text-left shadow-sm focus:outline-none dark:bg-[#363636] dark:text-white">
                           <span className="block truncate">{paymentMonthOptions.find(opt => opt.value === workplace.payment_month)?.label}</span>
-                            <ChevronUpDownIcon className="pointer-events-none absolute inset-y-0 right-0 h-5 w-5 text-gray-400" aria-hidden="true" />
+                          <span className="pointer-events-none absolute inset-y-0 right-0 flex h-full w-10 items-center justify-center">
+                            <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                          </span>
                         </Listbox.Button>
                         <Listbox.Options className="absolute z-10 mt-1 w-full max-h-60 overflow-auto rounded-md py-1 shadow-lg focus:outline-none dark:bg-[#4e4e4e]">
                           {paymentMonthOptions.map((option) => (
@@ -284,7 +288,9 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
                       <div className="relative w-full">
                         <Listbox.Button className="relative w-full cursor-default rounded-md border p-2 pr-10 text-left shadow-sm focus:outline-none dark:bg-[#363636] dark:text-white">
                           <span className="block truncate">{dayOptions.find(opt => opt.value == workplace.payment_day)?.label}</span>
-                          <ChevronUpDownIcon className="pointer-events-none absolute inset-y-0 right-0 h-5 w-5 text-gray-400" aria-hidden="true" />
+                          <span className="pointer-events-none absolute inset-y-0 right-0 flex h-full w-10 items-center justify-center">
+                            <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                          </span>
                         </Listbox.Button>
                         <Listbox.Options className="absolute z-10 mt-1 w-full max-h-60 overflow-auto rounded-md py-1 shadow-lg focus:outline-none dark:bg-[#4e4e4e]">
                           {dayOptions.map((option) => (
@@ -363,7 +369,9 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
               <div className="relative">
                 <Listbox.Button className="relative w-full cursor-default rounded-md border p-2 pr-10 text-left shadow-sm focus:outline-none dark:bg-[#363636] dark:text-white">
                   <span className="block truncate">{dayOptions.find(opt => opt.value == newWorkplaceClosing_day)?.label || <span className="text-gray-400">選択してください</span>}</span>
-                    <ChevronUpDownIcon className="pointer-events-none absolute inset-y-0 right-0 h-5 w-5 text-gray-400" aria-hidden="true" />
+                  <span className="pointer-events-none absolute inset-y-0 right-0 flex h-full w-10 items-center justify-center">
+                    <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                  </span>
                 </Listbox.Button>
                 <Listbox.Options className="absolute z-10 mt-1 w-full max-h-60 overflow-auto rounded-md py-1 shadow-lg focus:outline-none dark:bg-[#4e4e4e]">
                   {dayOptions.map((option) => (
@@ -385,7 +393,9 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
                 <div className="relative w-full">
                   <Listbox.Button className="relative w-full cursor-default rounded-md border p-2 pr-10 text-left shadow-sm focus:outline-none dark:bg-[#363636] dark:text-white">
                     <span className="block truncate">{paymentMonthOptions.find(opt => opt.value === newWorkplacePayment_month)?.label || <span className="text-gray-400">選択</span>}</span>
-                      <ChevronUpDownIcon className="pointer-events-none absolute inset-y-0 right-0 h-5 w-5 text-gray-400" aria-hidden="true" />
+                    <span className="pointer-events-none absolute inset-y-0 right-0 flex h-full w-10 items-center justify-center">
+                      <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                    </span>
                   </Listbox.Button>
                   <Listbox.Options className="absolute z-10 mt-1 w-full max-h-60 overflow-auto rounded-md py-1 shadow-lg focus:outline-none dark:bg-[#4e4e4e]">
                     {paymentMonthOptions.map((option) => (
@@ -406,7 +416,9 @@ export default function WorkplaceSettingForm({ user_id }: Props) {
                 <div className="relative w-full">
                   <Listbox.Button className="relative w-full cursor-default rounded-md border p-2 pr-10 text-left shadow-sm focus:outline-none dark:bg-[#363636] dark:text-white">
                     <span className="block truncate">{dayOptions.find(opt => opt.value == newWorkplacePayment_day)?.label || <span className="text-gray-400">選択</span>}</span>
-                      <ChevronUpDownIcon className="pointer-events-none absolute inset-y-0 right-0 h-5 w-5 text-gray-400" aria-hidden="true" />
+                    <span className="pointer-events-none absolute inset-y-0 right-0 flex h-full w-10 items-center justify-center">
+                      <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                    </span>
                   </Listbox.Button>
                   <Listbox.Options className="absolute z-10 mt-1 w-full max-h-60 overflow-auto rounded-md py-1 shadow-lg focus:outline-none dark:bg-[#4e4e4e]">
                     {dayOptions.map((option) => (
