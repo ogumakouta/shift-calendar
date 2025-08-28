@@ -24,12 +24,14 @@ function formatDate(date) {
   return `${year}-${month}-${day}`;
 }
 
-const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
 export default function MyCalendar({ value, onChange, events}: Props) {
-  const [isDarkMode, setIsDarkMode] = useState(mediaQuery.matches);
-
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  
   useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    setIsDarkMode(mediaQuery.matches);
+    
     // osのテーマが変更されたときに実行される関数
     const handleChange = (e) => {
       setIsDarkMode(e.matches);
