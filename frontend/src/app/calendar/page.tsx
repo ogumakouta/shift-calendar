@@ -73,10 +73,10 @@ export default function CalendarPage() {
 
   // 認証が成功した場合に表示されるページ内容
   return (
-    <div className="flex max-h-[950px]">
+    <div className="flex max-h-[950px] max-w-[100%]">
       <CreateEvent onEventCreated={handleEventCreated} date={selectedDate}/>
       <Calender value={selectedDate} onChange={setSelectedDate} events={events}/>
-      <div className='flex flex-col max-w-[288px] max-h-[950px] mx-8 gap-y-4'>
+      <div className='flex flex-col max-w-[15%] w-full mx-[15px] gap-y-4'>
         <EventListArea date={selectedDate} events={events} onEventCreated={handleEventCreated}/>
         <MonthlySalaryArea date={selectedDate} events={events}/>
       </div>

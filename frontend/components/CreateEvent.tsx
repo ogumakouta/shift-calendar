@@ -266,13 +266,13 @@ export default function CreateEvent({ onEventCreated, date }: Props) {
 
 
   return (
-    <div className='h-[96%]'>
-    <h1 className='text-center text-3xl py-5'>予定の追加</h1>
+    <div className='h-[96%] max-w-[15%] w-full mx-[15px]'>
+    <h1 className='text-center text-3xl'>予定の追加</h1>
       <form 
         onSubmit={handleSubmit} 
-        className="flex flex-col gap-2 max-w-[265px] px-8"
+        className="flex flex-col gap-2"
       >
-        <div className="text-center text-red-500">
+        <div className="text-center text-red-500 text-xs h-[16px]"> {/* エラーメッセージ */}
           {message}
         </div>
         <input type="hidden" id='user_id' value={user_id} />
