@@ -1,14 +1,12 @@
 @charset "utf-8";
 
 .react-calendar {
-    max-width: 1344px;
-    width: 70%;
+    max-width: 70%;
+    width: 100%;
     border: none;
     border-radius: 15px;
     background-color: #fbfbfb;
 }
-
-.react-calendar
 
 .react-calendar__tile {
     height: 117px;
@@ -44,11 +42,6 @@
 
 /*ダークモード時のスタイル*/
 .dark-mode {
-    max-width: 1344px;
-    width: 70%;
-}
-.dark-mode {
-    width: 100%;
     border: none;
     border-radius: 15px;
     background-color: #505050;
