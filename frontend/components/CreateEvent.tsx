@@ -266,11 +266,11 @@ export default function CreateEvent({ onEventCreated, date }: Props) {
 
 
   return (
-    <div className='h-[96%] max-w-[15%] w-full mx-[15px]'>
+    <div className='max-w-[15%] w-full mx-[15px] flex flex-col'>
     <h1 className='text-center text-3xl'>予定の追加</h1>
-      <form 
+      <form
         onSubmit={handleSubmit} 
-        className="flex flex-col gap-2"
+        className="flex flex-col gap-2 overflow-y-auto flex-grow"
       >
         <div className="text-center text-red-500 text-xs h-[16px]"> {/* エラーメッセージ */}
           {message}
