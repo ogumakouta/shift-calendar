@@ -29,12 +29,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-      <div className="flex p-5 justify-between items-center max-h-[130px]">
-        <Link href='/calendar'><h1 className="header text-5xl my-5">シフトカレンダー</h1></Link>
-        <nav className="flex items-center">
-          <SettingPageButton/>
-        </nav>
-      </div>
+        <header className="flex h-20 items-center justify-between px-4 md:px-6">
+          <Link href="/calendar" className="flex items-center gap-2">
+            <h1 className="header text-3xl sm:text-4xl">シフトカレンダー</h1>
+          </Link>
+          <nav className="flex items-center"><SettingPageButton /></nav>
+        </header>
         {children}
       </body>
     </html>
