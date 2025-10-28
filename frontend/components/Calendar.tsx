@@ -64,13 +64,12 @@ export default function MyCalendar({ value, onChange, events}: Props) {
   };
 
   return (
-    <div className={isDarkMode ? 'dark-mode' : ''}>
       <Calendar 
         onChange={onChange}
         value={value} 
         tileContent={addEventMarker}
         locale="ja-JP"
+        className={isDarkMode ? 'dark-mode' : ''}
       />
-    </div>
   );
 }
